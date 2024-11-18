@@ -32,4 +32,5 @@ task1_cooling_system/main.o: ..\Core\Src\main.c ..\Core\Inc\main.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_tim_ex.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_tim.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_gpio.h \
-  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_bus.h
+  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_bus.h \
+  ..\Core\Inc\7_Segment.h

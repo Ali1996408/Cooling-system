@@ -410,6 +410,26 @@
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f0xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>Timer3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Timer3.c</FilePath>
+            </File>
+            <File>
+              <FileName>Timer3.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Timer3.h</FilePath>
+            </File>
+            <File>
+              <FileName>7_Segment.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\7_Segment.c</FilePath>
+            </File>
+            <File>
+              <FileName>7_Segment.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\7_Segment.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

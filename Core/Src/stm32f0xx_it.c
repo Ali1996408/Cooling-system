@@ -19,9 +19,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32f0xx_ll_tim.h"   // For timer functions
-#include "stm32f0xx_ll_gpio.h"  // For GPIO functions
-
+#include "stm32f0xx_ll_tim.h"
+#include "stm32f0xx_ll_gpio.h"
+#include "stm32f0xx_ll_bus.h"
+#include "Timer3.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -150,13 +151,13 @@ void TIM3_IRQHandler(void)
   /* USER CODE BEGIN TIM3_IRQn 0 */
 
   /* USER CODE END TIM3_IRQn 0 */
-  if (LL_TIM_IsActiveFlag_UPDATE(TIM3))
-       {
-           LL_TIM_ClearFlag_UPDATE(TIM3);
-           
-           // Toggle the LED
-           LL_GPIO_TogglePin(GPIOA, LL_GPIO_PIN_5);
-       }
+ if (LL_TIM_IsActiveFlag_UPDATE(TIM3)) {
+    LL_TIM_ClearFlag_UPDATE(TIM3);
+
+    // Toggle the LED using defined pin and port
+    LL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+}
+
   /* USER CODE BEGIN TIM3_IRQn 1 */
 
   /* USER CODE END TIM3_IRQn 1 */

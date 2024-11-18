@@ -1,5 +1,5 @@
-task1_cooling_system/stm32f0xx_it.o: ..\Core\Src\stm32f0xx_it.c \
-  ..\Core\Inc\main.h ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal.h \
+task1_cooling_system/timer3.o: Timer3.c ..\Core\Inc\main.h \
+  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal.h \
   ..\Core\Inc\stm32f0xx_hal_conf.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_rcc.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_def.h \
@@ -32,5 +32,4 @@ task1_cooling_system/stm32f0xx_it.o: ..\Core\Src\stm32f0xx_it.c \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_tim_ex.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_tim.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_gpio.h \
-  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_bus.h \
-  ..\Core\Inc\Timer3.h
+  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_bus.h Timer3.h
