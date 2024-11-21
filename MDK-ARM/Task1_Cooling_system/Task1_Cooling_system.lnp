@@ -1,10 +1,9 @@
 --cpu Cortex-M0
 "task1_cooling_system\startup_stm32f030x8.o"
+"task1_cooling_system\7_segment.o"
 "task1_cooling_system\main.o"
 "task1_cooling_system\stm32f0xx_it.o"
 "task1_cooling_system\stm32f0xx_hal_msp.o"
-"task1_cooling_system\timer3.o"
-"task1_cooling_system\7_segment.o"
 "task1_cooling_system\stm32f0xx_hal_tim.o"
 "task1_cooling_system\stm32f0xx_hal_tim_ex.o"
 "task1_cooling_system\stm32f0xx_hal_rcc.o"
