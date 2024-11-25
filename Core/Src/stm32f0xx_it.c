@@ -22,15 +22,16 @@
 #include "stm32f0xx_ll_tim.h"
 #include "stm32f0xx_ll_gpio.h"
 #include "stm32f0xx_ll_bus.h"
+
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-volatile char buttonFlagForward = 0; // forward button flag
-volatile char buttonFlagBackward = 0; // backward button flag
-volatile char buttonFlagCancel = 0; // cancel button flag
+
+
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
@@ -153,43 +154,44 @@ void EXTI4_15_IRQHandler(void)
     if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_6) != RESET)
     {
         __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_6);  // Clear interrupt flag
-        // Handle the interrupt for PA6 here
-			buttonFlagForward=1;
-			
-        HAL_GPIO_TogglePin(GPIOA,LED1_Pin);
+        if (button_debounce_timer[0] == 0) {
+            button_debounce_timer[0] = DEBOUNCE_THRESHOLD_MS;
+            buttonFlagForward = 1;
+            HAL_GPIO_TogglePin(GPIOA, LED1_Pin);
+        }
     }
 
     // Check interrupt for PA7 (EXTI Line 7)
     if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_7) != RESET)
     {
         __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_7);  // Clear interrupt flag
-        // Handle the interrupt for PA7 here
-			        HAL_GPIO_TogglePin(GPIOA,LED2_Pin);
-			buttonFlagCancel=1;
-
+        if (button_debounce_timer[1] == 0) { // Updated timer index for each button
+            button_debounce_timer[1] = DEBOUNCE_THRESHOLD_MS;
+            buttonFlagCancel = 1;
+            HAL_GPIO_TogglePin(GPIOA, LED2_Pin);
+        }
     }
 
     // Check interrupt for PA8 (EXTI Line 8)
     if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_8) != RESET)
     {
         __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_8);  // Clear interrupt flag
-        // Handle the interrupt for PA8 here
-			HAL_GPIO_TogglePin(GPIOA,LED3_Pin);
-			buttonFlagBackward=1;
-
-
-
+        if (button_debounce_timer[2] == 0) {
+            button_debounce_timer[2] = DEBOUNCE_THRESHOLD_MS;
+            buttonFlagBackward = 1;
+            HAL_GPIO_TogglePin(GPIOA, LED3_Pin);
+        }
     }
 
     // Check interrupt for PA12 (EXTI Line 12)
     if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_12) != RESET)
     {
         __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_12);  // Clear interrupt flag
-        // Handle the interrupt for PA12 here
-					HAL_GPIO_TogglePin(GPIOA,LED4_Pin);
-
-				
-
+        if (button_debounce_timer[3] == 0) {
+            button_debounce_timer[3] = DEBOUNCE_THRESHOLD_MS;
+            buttonFlagConfirm = 1;
+            HAL_GPIO_TogglePin(GPIOA, LED4_Pin);
+        }
     }
 }
 
@@ -201,6 +203,7 @@ void TIM3_IRQHandler(void)
 {
  if (LL_TIM_IsActiveFlag_UPDATE(TIM3)) {
     LL_TIM_ClearFlag_UPDATE(TIM3);
+	 debounce_buttons();
 
     // Toggle the LED using defined pin and port
     LL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);

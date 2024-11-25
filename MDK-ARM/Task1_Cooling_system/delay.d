@@ -1,18 +1,19 @@
-task1_cooling_system/7_segment.o: 7_Segment.c ..\Core\Inc\main.h \
-  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal.h \
-  ..\Core\Inc\stm32f0xx_hal_conf.h \
-  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_rcc.h \
-  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_def.h \
+task1_cooling_system/delay.o: Delay.c \
+  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_tim.h \
   ..\Drivers\CMSIS\Device\ST\STM32F0xx\Include\stm32f0xx.h \
   ..\Drivers\CMSIS\Device\ST\STM32F0xx\Include\stm32f030x8.h \
   ..\Drivers\CMSIS\Include\core_cm0.h \
   C:\Keil_v5\ARM\ARMCLANG\include\stdint.h \
-  C:\Users\123\Documents\Projects_STM32\Task1_Cooling_system\ (interrupt\ buttons)\Drivers\CMSIS\Include\cmsis_version.h \
-  C:\Users\123\Documents\Projects_STM32\Task1_Cooling_system\ (interrupt\ buttons)\Drivers\CMSIS\Include\cmsis_compiler.h \
-  C:\Users\123\Documents\Projects_STM32\Task1_Cooling_system\ (interrupt\ buttons)\Drivers\CMSIS\Include\cmsis_armclang.h \
+  C:\Users\123\Documents\Projects_STM32\Task1_Cooling_system\Drivers\CMSIS\Include\cmsis_version.h \
+  C:\Users\123\Documents\Projects_STM32\Task1_Cooling_system\Drivers\CMSIS\Include\cmsis_compiler.h \
+  C:\Users\123\Documents\Projects_STM32\Task1_Cooling_system\Drivers\CMSIS\Include\cmsis_armclang.h \
   C:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h \
   C:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h \
   ..\Drivers\CMSIS\Device\ST\STM32F0xx\Include\system_stm32f0xx.h \
+  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal.h \
+  ..\Core\Inc\stm32f0xx_hal_conf.h \
+  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_rcc.h \
+  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_def.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h \
   C:\Keil_v5\ARM\ARMCLANG\include\stddef.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_rcc_ex.h \
@@ -29,4 +30,5 @@ task1_cooling_system/7_segment.o: 7_Segment.c ..\Core\Inc\main.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_pwr.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_pwr_ex.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_tim.h \
-  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_tim_ex.h 7_Segment.h
+  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_hal_tim_ex.h \
+  ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_bus.h

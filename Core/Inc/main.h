@@ -51,6 +51,7 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
+void debounce_buttons(void);
 
 /* USER CODE BEGIN EFP */
 
@@ -77,6 +78,12 @@ void Error_Handler(void);
 #define S4_Pin GPIO_PIN_12
 #define S4_GPIO_Port GPIOA
 #define S4_EXTI_IRQn EXTI4_15_IRQn
+#define DEBOUNCE_THRESHOLD_MS 50
+extern volatile int button_debounce_timer[4]; 
+extern volatile char buttonFlagForward; 
+extern volatile char buttonFlagBackward;
+extern volatile char buttonFlagCancel;
+extern volatile char buttonFlagConfirm;
 
 /* USER CODE BEGIN Private defines */
 

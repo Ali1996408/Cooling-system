@@ -22,6 +22,8 @@
 #include "stm32f0xx_ll_gpio.h"
 #include "stm32f0xx_ll_bus.h"
 #include "7_Segment.h"
+
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -31,6 +33,13 @@
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
+#define DEBOUNCE_THRESHOLD_MS 50
+volatile int button_debounce_timer[4] = {0, 0, 0, 0}; // Debounce timers for 4 buttons
+volatile char buttonFlagForward = 0; // forward button flag
+volatile char buttonFlagBackward = 0; // backward button flag
+volatile char buttonFlagCancel = 0; // cancel button flag
+volatile char buttonFlagConfirm = 0; // confirm button flag
+
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
@@ -55,6 +64,7 @@ void MX_GPIO_Init(void);
 void MX_TIM3_Init(void);
 void Error_Handler(void);
 void SevenSegment(void);
+void debounce_buttons(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -114,6 +124,15 @@ int main(void)
   * @brief System Clock Configuration
   * @retval None
   */
+
+
+void debounce_buttons() {
+    for (int i = 0; i < 4; i++) {
+        if (button_debounce_timer[i] > 0)
+					button_debounce_timer[i]--;
+    }
+}
+
 void SystemClock_Config(void)
 {
    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -150,7 +169,7 @@ void SystemClock_Config(void)
 
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM3);  // Enable TIM3 clock
     LL_TIM_SetPrescaler(TIM3, 7999);  // Prescaler value
-    LL_TIM_SetAutoReload(TIM3, 999);  // Auto-reload value (period)
+    LL_TIM_SetAutoReload(TIM3, 9);  // Auto-reload value (period)
     LL_TIM_SetCounterMode(TIM3, LL_TIM_COUNTERMODE_UP);  // Counter mode
     LL_TIM_SetClockDivision(TIM3, LL_TIM_CLOCKDIVISION_DIV1);  // Clock division
     LL_TIM_EnableIT_UPDATE(TIM3);  // Enable update interrupt
