@@ -396,16 +396,6 @@
           <GroupName>Application/User/Core</GroupName>
           <Files>
             <File>
-              <FileName>7_Segment.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\7_Segment.c</FilePath>
-            </File>
-            <File>
-              <FileName>7_Segment.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\7_Segment.h</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/main.c</FilePath>
@@ -419,6 +409,16 @@
               <FileName>stm32f0xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f0xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>7_Segment.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\7_Segment.h</FilePath>
+            </File>
+            <File>
+              <FileName>7_Segment.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\7_Segment.c</FilePath>
             </File>
           </Files>
         </Group>

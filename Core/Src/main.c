@@ -63,7 +63,6 @@ void SystemClock_Config(void);
 void MX_GPIO_Init(void);
 void MX_TIM3_Init(void);
 void Error_Handler(void);
-void SevenSegment(void);
 void debounce_buttons(void);
 /* USER CODE BEGIN PFP */
 
@@ -107,14 +106,21 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
-	SevenSegment();
-
+//int  counter = 0;
+//static int temperature = 123; // Example temperature to display
+//static int parameter = 1;    // Example custom parameter
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+  /* USER CODE BEGIN WHILE */ 
+	
+	 int temprature = 335;       // Example number to display
+    // Pass the number to be displayed // Prepare digits of initial number
+
   while (1)
   {
+		SevenSegment(temprature);
     /* USER CODE END WHILE */
 
+		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
