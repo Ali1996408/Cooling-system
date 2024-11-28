@@ -1,5 +1,6 @@
 #include "main.h"
 #include "7_Segment.h"
+#include <stdlib.h>
 
 int  part0, part1, part2, counter = 0;
 
@@ -58,52 +59,75 @@ void displayDigit(int digitValue, int enablePin, int segmentType) {
 }
 
 void SevenSegment(int temp) {
-   char isNegative=0;
-	if(temp<0)
-	{
-		temp*=(-1);
-		isNegative=1;
-		
-	}
-//        if (number > 5) {
-//            // Display -1 on all digits
-//            displayDigit(-1, 11, 3); // Third digit
-//            HAL_Delay(1);
-
-////            displayDigit(-1, 10, 2); // Second digit
-////            HAL_Delay(1);
-
-            displayDigit(-1, 9, 1); // First digit
-            HAL_Delay(1);
-
-//            // Display -1 or another pattern on the fourth digit, if needed
-////            displayDigit(-1, 8, 4); // Custom pattern
-////            HAL_Delay(1);
-//        } else {
-            // Standard display logic
-            part0 = temp % 10;
-            part1 = (temp / 10) % 10;
-            part2 = (temp / 100) % 10;
-
-            displayDigit(part2, 11, 3); // Third digit
-            HAL_Delay(1);
-
-            displayDigit(part1, 10, 2); // Second digit
-            HAL_Delay(1);
-
-            displayDigit(part0, 9, 1); // First digit
-            HAL_Delay(1);
-
-            // Display unique characters on the fourth digit
-            displayDigit(part0, 8, 4); // Custom pattern
-            HAL_Delay(1);
-						if(isNegative){
-							
-							displayDigit(-1, 10, 2); // Second digit
-                HAL_Delay(1);
-							
-						}
-						
-        //}
-
+    char isNegative = 0;
+    if (temp < 0) {
+        
+        isNegative = 1;
     }
+
+    // Break number into individual digits
+    part0 = abs(temp) % 10;           // Ones
+    part1 = (abs(temp) / 10) % 10;    // Tens
+    part2 = (abs(temp) / 100) % 10;   // Hundreds
+
+    // Use a state machine or call this function sequentially to display digits
+		
+						
+		
+    static int currentStep = 0;
+		
+		
+
+    switch (currentStep) {
+			
+			 case 0:
+		if (isNegative) {
+         displayDigit(-1, 10, 2); // Display Negative sign for Tens
+			
+					
+            }
+		       
+		  currentStep++;
+            break;  
+			 case 1:
+				displayDigit(-1, 9, 1); 
+			  currentStep++;
+            break; 
+			 
+						
+        case 2: // Third digit (Hundreds)
+            displayDigit(part2, 11, 3); // Third digit
+            currentStep++;
+            break;
+
+        case 3: // Second digit (Tens)
+						
+					 
+                displayDigit(part1, 10, 2); // Second digit
+            
+            
+					
+					currentStep++;
+				
+            break;
+				
+
+        case 4: // First digit (Ones)
+            displayDigit(part0, 9, 1); // First digit
+            currentStep++;
+            break;
+
+        case 5: // Fourth digit (Custom)
+            displayDigit(part0, 8, 4); // Fourth digit (Custom pattern)
+            currentStep = 0; // Reset to the first digit
+            break;
+				 default:
+            // Reset the state machine to restart display
+            currentStep = 0;
+            break;
+				
+				
+			
+			
+    }
+}

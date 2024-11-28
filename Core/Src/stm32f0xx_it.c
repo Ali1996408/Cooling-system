@@ -22,6 +22,7 @@
 #include "stm32f0xx_ll_tim.h"
 #include "stm32f0xx_ll_gpio.h"
 #include "stm32f0xx_ll_bus.h"
+#include "7_Segment.h"
 
 
 /* Private includes ----------------------------------------------------------*/
@@ -207,6 +208,7 @@ void TIM3_IRQHandler(void)
 
     // Toggle the LED using defined pin and port
     LL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+	
 }
  }
 

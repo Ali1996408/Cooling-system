@@ -84,6 +84,7 @@ extern volatile char buttonFlagForward;
 extern volatile char buttonFlagBackward;
 extern volatile char buttonFlagCancel;
 extern volatile char buttonFlagConfirm;
+void TimerHandler(void);
 
 /* USER CODE BEGIN Private defines */
 

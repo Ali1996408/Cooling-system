@@ -39,6 +39,15 @@ volatile char buttonFlagForward = 0; // forward button flag
 volatile char buttonFlagBackward = 0; // backward button flag
 volatile char buttonFlagCancel = 0; // cancel button flag
 volatile char buttonFlagConfirm = 0; // confirm button flag
+enum MenuLevel {
+    MAIN_SCREEN = 0,
+    PARAMETER_SELECTION = 1,
+    PARAMETER_ADJUSTMENT = 2
+};
+
+static enum MenuLevel menu_position = MAIN_SCREEN;
+static int selected_parameter = 0;  // Tracks which parameter you're adjusting
+
 
 
 /* Private define ------------------------------------------------------------*/
@@ -64,6 +73,15 @@ void MX_GPIO_Init(void);
 void MX_TIM3_Init(void);
 void Error_Handler(void);
 void debounce_buttons(void);
+ int temprature = -225;  
+void TimerHandler() {
+    static int lastUpdateTime = 0;
+  if ((HAL_GetTick() - lastUpdateTime) >= 1) {
+        SevenSegment(temprature); // Call with updated temperature value
+        lastUpdateTime = HAL_GetTick();
+    }
+}  
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -112,14 +130,14 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */ 
 	
-	 int temprature = 335;       // Example number to display
+	     // Example number to display
     // Pass the number to be displayed // Prepare digits of initial number
 
   while (1)
   {
-		SevenSegment(temprature);
+	
     /* USER CODE END WHILE */
-
+ TimerHandler();
 		
     /* USER CODE BEGIN 3 */
   }
