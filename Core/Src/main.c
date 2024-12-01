@@ -22,6 +22,7 @@
 #include "stm32f0xx_ll_gpio.h"
 #include "stm32f0xx_ll_bus.h"
 #include "7_Segment.h"
+#include "stdlib.h"
 
 
 /* Private includes ----------------------------------------------------------*/
@@ -34,11 +35,15 @@
 
 /* USER CODE END PTD */
 #define DEBOUNCE_THRESHOLD_MS 50
+#define  INACTIVITY_TIME 20000
 volatile int button_debounce_timer[4] = {0, 0, 0, 0}; // Debounce timers for 4 buttons
 volatile char buttonFlagForward = 0; // forward button flag
 volatile char buttonFlagBackward = 0; // backward button flag
 volatile char buttonFlagCancel = 0; // cancel button flag
 volatile char buttonFlagConfirm = 0; // confirm button flag
+volatile int inactivity_timer = 0;
+
+
 enum MenuLevel {
     MAIN_SCREEN = 0,
     PARAMETER_SELECTION = 1,
@@ -47,7 +52,6 @@ enum MenuLevel {
 
 static enum MenuLevel menu_position = MAIN_SCREEN;
 static int selected_parameter = 0;  // Tracks which parameter you're adjusting
-
 
 
 /* Private define ------------------------------------------------------------*/
@@ -73,14 +77,85 @@ void MX_GPIO_Init(void);
 void MX_TIM3_Init(void);
 void Error_Handler(void);
 void debounce_buttons(void);
- int temprature = -225;  
-void TimerHandler() {
-    static int lastUpdateTime = 0;
-  if ((HAL_GetTick() - lastUpdateTime) >= 1) {
-        SevenSegment(temprature); // Call with updated temperature value
-        lastUpdateTime = HAL_GetTick();
+ int temprature = 335;  
+//void TimerHandler() {
+//    static int lastUpdateTime = 0;
+//  if ((HAL_GetTick() - lastUpdateTime) >= 1) {
+//        SevenSegment(temprature); // Call with updated temperature value
+//        lastUpdateTime = HAL_GetTick();
+//    }
+//}  
+void handle_menu_logic(void) {
+    switch (menu_position) {
+        
+    case MAIN_SCREEN:
+        // Display the temperature
+        SevenSegment(abs(temprature));
+
+        // Check navigation buttons
+        if (buttonFlagForward|| buttonFlagBackward) {
+            menu_position = PARAMETER_SELECTION;  // Enter parameter selection
+            selected_parameter = 0;  // Start from the first parameter
+        }
+        break;
+
+    case PARAMETER_SELECTION:
+//        // Display parameter index and value
+//        display_parameter(selected_parameter, get_parameter_value(selected_parameter));
+    temprature=(-1)*temprature;
+		SevenSegment(temprature);
+		if(buttonFlagConfirm){
+			 menu_position = PARAMETER_ADJUSTMENT;
+		}
+		 break;
+//        // Navigation
+//        if (buttonFlagForward)
+//            selected_parameter++;
+//        else if (buttonFlagBackward)
+//            selected_parameter--;
+
+//        // Constrain parameter selection
+//        if (selected_parameter < 0) selected_parameter = 0;
+//        if (selected_parameter >= TOTAL_PARAMETERS) selected_parameter = TOTAL_PARAMETERS - 1;
+
+//        // Confirm selection
+//        if (buttonFlagConfirm) {
+//            menu_position = PARAMETER_ADJUSTMENT;
+//        }
+//        // Cancel to return to main screen
+//        else if (buttonFlagCancel) {
+//            menu_position = MAIN_SCREEN;
+//        }
+       
+
+    case PARAMETER_ADJUSTMENT:
+			temprature=+1;
+		SevenSegment(temprature);
+		break;
+		
+        // Display current selected parameter value
+//        display_parameter(selected_parameter, get_parameter_value(selected_parameter));
+
+//        // Adjust value with forward/backward
+//        if (buttonFlagForward)
+//       //     adjust_parameter_value(selected_parameter, 1);  // Increment
+//        else if (buttonFlagBackward)
+//            adjust_parameter_value(selected_parameter, -1);  // Decrement
+
+        // Confirm change or cancel
+//        if (buttonFlagConfirm) {
+//            save_parameter_value(selected_parameter);  // Save the new value
+//            menu_position = PARAMETER_SELECTION;  // Return to selection
+//        } else if (buttonFlagCancel) {
+//            menu_position = PARAMETER_SELECTION;  // Cancel adjustment
+//        }
+		default:
+			menu_position= MAIN_SCREEN;
+        
     }
-}  
+}
+
+
 
 /* USER CODE BEGIN PFP */
 
@@ -135,10 +210,10 @@ int main(void)
 
   while (1)
   {
+			
+
 	
     /* USER CODE END WHILE */
- TimerHandler();
-		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -157,6 +232,33 @@ void debounce_buttons() {
     }
 }
 
+void check_inactivity() {
+    if (inactivity_timer > 0) {
+        inactivity_timer--;
+    } else {
+      
+            menu_position = MAIN_SCREEN;
+        
+    }
+}
+
+void toggle ()
+{
+static	int toggle_time =1000;
+	if(toggle_time>0)
+	{
+		toggle_time--;
+		
+	}
+	else
+	{
+		    LL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+		    toggle_time = 1000;
+
+	}
+	
+	
+}
 void SystemClock_Config(void)
 {
    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -192,8 +294,8 @@ void SystemClock_Config(void)
 {
 
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM3);  // Enable TIM3 clock
-    LL_TIM_SetPrescaler(TIM3, 7999);  // Prescaler value
-    LL_TIM_SetAutoReload(TIM3, 9);  // Auto-reload value (period)
+    LL_TIM_SetPrescaler(TIM3, 3999);  // Prescaler value
+    LL_TIM_SetAutoReload(TIM3, 1);  // Auto-reload value (period)
     LL_TIM_SetCounterMode(TIM3, LL_TIM_COUNTERMODE_UP);  // Counter mode
     LL_TIM_SetClockDivision(TIM3, LL_TIM_CLOCKDIVISION_DIV1);  // Clock division
     LL_TIM_EnableIT_UPDATE(TIM3);  // Enable update interrupt
