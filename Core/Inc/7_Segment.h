@@ -4,5 +4,6 @@
 
 // Function prototype for Timer3 initialization
 int mask(int num);
-void SevenSegment(int temp);
+void temprature_display(int temp);
+void parameter_display (int index);
 #endif /* TIMER3_H */

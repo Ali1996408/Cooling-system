@@ -79,13 +79,13 @@ void debounce_buttons(void);
 #define S4_GPIO_Port GPIOA
 #define S4_EXTI_IRQn EXTI4_15_IRQn
 #define DEBOUNCE_THRESHOLD_MS 50
-#define  INACTIVITY_TIME 20000
+#define  INACTIVITY_TIME 300000
 extern volatile int button_debounce_timer[4]; 
 extern volatile char buttonFlagForward; 
 extern volatile char buttonFlagBackward;
 extern volatile char buttonFlagCancel;
 extern volatile char buttonFlagConfirm;
-extern volatile int inactivity_timer ;
+extern volatile uint32_t inactivity_timer ;
 void TimerHandler(void);
  void handle_menu_logic(void);
 void check_inactivity(void);

@@ -34,14 +34,15 @@
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
+#define TOTAL_PARAMETERS 78
 #define DEBOUNCE_THRESHOLD_MS 50
-#define  INACTIVITY_TIME 20000
+#define  INACTIVITY_TIME 300000
 volatile int button_debounce_timer[4] = {0, 0, 0, 0}; // Debounce timers for 4 buttons
 volatile char buttonFlagForward = 0; // forward button flag
 volatile char buttonFlagBackward = 0; // backward button flag
 volatile char buttonFlagCancel = 0; // cancel button flag
 volatile char buttonFlagConfirm = 0; // confirm button flag
-volatile int inactivity_timer = 0;
+volatile uint32_t inactivity_timer = 0;
 
 
 enum MenuLevel {
@@ -90,23 +91,46 @@ void handle_menu_logic(void) {
         
     case MAIN_SCREEN:
         // Display the temperature
-        SevenSegment(abs(temprature));
+        temprature_display(temprature);
 
         // Check navigation buttons
-        if (buttonFlagForward|| buttonFlagBackward) {
-            menu_position = PARAMETER_SELECTION;  // Enter parameter selection
-            selected_parameter = 0;  // Start from the first parameter
-        }
+            if (buttonFlagForward || buttonFlagBackward) {
+         menu_position = PARAMETER_SELECTION;
+         selected_parameter = 0;
+         buttonFlagForward = 0;
+         buttonFlagBackward = 0;
+     }
+     
+
+				
+				
         break;
 
     case PARAMETER_SELECTION:
 //        // Display parameter index and value
 //        display_parameter(selected_parameter, get_parameter_value(selected_parameter));
-    temprature=(-1)*temprature;
-		SevenSegment(temprature);
+		       parameter_display(selected_parameter);
+		
+		 if (buttonFlagForward){
+            selected_parameter++;
+		  buttonFlagForward = 0;
+		 }
+        else if (buttonFlagBackward)
+				{
+            selected_parameter--;
+					  buttonFlagBackward = 0;
+					
+				}
+				 if (selected_parameter < 0) selected_parameter = 0;
+         if (selected_parameter >= TOTAL_PARAMETERS) selected_parameter = TOTAL_PARAMETERS - 1;
 		if(buttonFlagConfirm){
 			 menu_position = PARAMETER_ADJUSTMENT;
+			buttonFlagConfirm=0;
 		}
+		else if (buttonFlagCancel) {
+            menu_position = MAIN_SCREEN;
+			       buttonFlagCancel=0;
+        }
 		 break;
 //        // Navigation
 //        if (buttonFlagForward)
@@ -129,8 +153,10 @@ void handle_menu_logic(void) {
        
 
     case PARAMETER_ADJUSTMENT:
-			temprature=+1;
-		SevenSegment(temprature);
+//			temprature=+1;
+//		temprature_display(temprature);
+//		menu_position=MAIN_SCREEN;
+		
 		break;
 		
         // Display current selected parameter value
@@ -238,6 +264,7 @@ void check_inactivity() {
     } else {
       
             menu_position = MAIN_SCREEN;
+			      inactivity_timer=0;
         
     }
 }

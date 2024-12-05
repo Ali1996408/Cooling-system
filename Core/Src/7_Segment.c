@@ -1,6 +1,9 @@
 #include "main.h"
 #include "7_Segment.h"
 #include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
 
 int  part0, part1, part2, counter = 0;
 
@@ -37,6 +40,32 @@ int maskFourthDigit(int num) {
 			  case -1: return 0b11111111;
     }
 }
+int mask_charecters(char index) {
+       switch (index) {
+           case 'r': return 0b01010000;
+           case 'A': return 0b01110111;
+           case 'F': return 0b01110001;
+           case 'O': return 0b01011100;
+           case 'N': return 0b01110110;
+           case 'd': return 0b01011110;
+           case 'u': return 0b00111110;
+           case 's': return 0b01101101;
+           case 'n': return 0b01010100;
+           case 'P': return 0b01110011;
+           case '-': return 0b01000000;  // Dash
+				   case 'c': return 0b01011000; // Example mask for 'c'
+           case 't': return 0b01110000; // Example mask for 't'
+           case 'o': return 0b01011100; // Example mask for 'o'
+
+           default: return 0b00000000;  // All segments off
+       }
+   }
+ bool isNumeric(char c) {
+       return c >= '0' && c <= '9'; // Check if it's a digit
+   }
+
+
+
 void disableAllDigits() {
     // Disable all digit enables
     GPIOB->ODR &= ~(0xF << 8); // Clear bits 8, 9, 10, 11
@@ -47,18 +76,24 @@ void displayDigit(int digitValue, int enablePin, int segmentType) {
     GPIOB->ODR &= ~(0xFF); // Clear segment outputs
   
     // Select appropriate mask function
-    int maskValue;
-    if (segmentType == 4) {
+    int maskValue=0;
+    // Decide which mask to use
+    if (segmentType == 5) { // Mixed characters/numbers
+        if (isNumeric(digitValue)) {
+            maskValue = mask(digitValue - '0'); // Use numeric mask
+        } else {
+            maskValue = mask_charecters(digitValue); // Use character mask
+        }
+    } else if (segmentType == 4) { // Fourth digit, custom logic
         maskValue = maskFourthDigit(digitValue);
-    } else {
+    } else { // Default to numeric
         maskValue = mask(digitValue);
     }
-  
     GPIOB->ODR |= (~maskValue & 0xFF); // Assuming active-low
     GPIOB->ODR |= (1 << enablePin); // Enable display
 }
 
-void SevenSegment(int temp) {
+void temprature_display(int temp) {
     char isNegative = 0;
     if (temp < 0) {
         
@@ -131,3 +166,57 @@ void SevenSegment(int temp) {
 			
     }
 }
+
+void parameter_display(int index) {
+    static int currentStep = 0;
+    static char displayBuffer[5] = {0};  // Increased buffer size to 4 + null terminator
+  
+    const char *parameters[] = {
+        "---", "r01", "r02", "r03", "r04", "r05", "r09", "r12", "r13", "r39", 
+        "r40", "A03", "A04", "A12", "A13", "A14", "A27", "A37", "c01", "c02", 
+        "c30", "c70", "d01", "d02", "d03", "d04", "d05", "d06", "d07", "d08", 
+        "d09", "d10", "d18", "d19", "F01", "F02", "F04", "t01", "t02", "t03", 
+        "t04", "t05", "t06", "t11", "t12", "t13", "t14", "t15", "t16", "t45",
+        "t46", "t47", "o01", "o02", "o03", "o04", "o05", "o06", "o15", "o16", 
+        "o38", "o39", "o46", "o64", "o65", "o66", "o67", "o70", "o72", "u09", 
+        "u10", "u13", "u28", "u58", "u59", "u60", "u69", "u71"
+    };
+  
+    // Verify index is in bounds
+    if (index < 0 || index >= (sizeof(parameters)/sizeof(parameters[0]))) {
+        index = sizeof(parameters)/sizeof(parameters[0]) - 1;
+    }
+
+    // Store the current parameter into the buffer
+    strncpy(displayBuffer, parameters[index], 3);
+   displayBuffer[3] = '\0'; // Explicitly terminate the string
+  
+    // Display the current step
+    switch (currentStep) {
+        case 0: 
+            displayDigit(displayBuffer[0], 11, 5); // Third digit
+            currentStep++;
+            break;
+        case 1: 
+            displayDigit(displayBuffer[1], 10, 5); // Second digit
+            currentStep++;
+            break;
+        case 2:
+            displayDigit(displayBuffer[2], 9, 5); // First digit
+            currentStep = 0; // Reset step
+            break;
+        default:
+            currentStep = 0;
+            break;  
+    }
+}
+
+
+	
+	
+	
+	
+	
+	
+	
+	

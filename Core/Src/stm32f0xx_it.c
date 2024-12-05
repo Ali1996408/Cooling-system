@@ -158,7 +158,7 @@ void EXTI4_15_IRQHandler(void)
         if (button_debounce_timer[0] == 0) {
             button_debounce_timer[0] = DEBOUNCE_THRESHOLD_MS;
             buttonFlagForward = 1;
-					inactivity_timer=200;
+					inactivity_timer=INACTIVITY_TIME;
            HAL_GPIO_TogglePin(GPIOA, LED1_Pin);
         }
     }
@@ -171,7 +171,7 @@ void EXTI4_15_IRQHandler(void)
             button_debounce_timer[1] = DEBOUNCE_THRESHOLD_MS;
             buttonFlagCancel = 1;
             HAL_GPIO_TogglePin(GPIOA, LED2_Pin);
-					inactivity_timer=200;
+					inactivity_timer=INACTIVITY_TIME;
         }
     }
 
@@ -183,7 +183,7 @@ void EXTI4_15_IRQHandler(void)
             button_debounce_timer[2] = DEBOUNCE_THRESHOLD_MS;
             buttonFlagBackward = 1;
             HAL_GPIO_TogglePin(GPIOA, LED3_Pin);
-					inactivity_timer=200;
+					inactivity_timer=INACTIVITY_TIME;
         }
     }
 
@@ -195,7 +195,7 @@ void EXTI4_15_IRQHandler(void)
             button_debounce_timer[3] = DEBOUNCE_THRESHOLD_MS;
             buttonFlagConfirm = 1;
             HAL_GPIO_TogglePin(GPIOA, LED4_Pin);
-					inactivity_timer=200;
+					inactivity_timer=INACTIVITY_TIME;
         }
     }
 }
