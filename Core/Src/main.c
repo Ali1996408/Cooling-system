@@ -35,14 +35,244 @@
 
 /* USER CODE END PTD */
 #define TOTAL_PARAMETERS 78
-#define DEBOUNCE_THRESHOLD_MS 50
-#define  INACTIVITY_TIME 300000
+
 volatile int button_debounce_timer[4] = {0, 0, 0, 0}; // Debounce timers for 4 buttons
 volatile char buttonFlagForward = 0; // forward button flag
 volatile char buttonFlagBackward = 0; // backward button flag
 volatile char buttonFlagCancel = 0; // cancel button flag
 volatile char buttonFlagConfirm = 0; // confirm button flag
 volatile uint32_t inactivity_timer = 0;
+
+typedef struct {
+//  ********   global_variables    ********** 
+ int tempratura;  
+signed int r01_Differencial;
+signed int r02_Maksimalnoe_ogranichenie_ustavki;
+signed int r03_Minimalnoe_ogranichenie_ustavki;
+signed int r04_Edinica_izmereniya_temperatury_C_F;
+signed int r05_Korrekciya_pokazanii_temperatury;  
+signed int r09_Korrekciya_signala_s_Sair;
+int r12_Ruchnoe_upravlenie_ostanovka_regulirovaniya_pusk_regulirovaniya;
+signed int r13_Smeschenie_ustavki_vo_vremya_nochnogo_rejima_raboty;
+signed int r39_Vklyuchenie_smescheniya_ustavki;
+signed int r40_Velichina_smescheniya_ustavki;
+
+
+
+// ******* Avarii ****//
+
+signed int A03_Zaderjka_avariinogo_signala_temperaturi;
+signed int A04_Zaderjka_avariinogo_signala_dveri;
+signed int A12_Zaderjka_avariinogo_signala_temperatury_pri_nachale_ohlajdeniya;
+signed int A13_Nijnii_predel_avariinogo_signala;
+signed int A14_Verhnii_predel_avariinogo_signala;
+signed int A27_Zaderjka_avariinogo_signala_DI;
+signed int A37_Avariinyi_verhnii_predel_dlya_temperatury_kondensatora;
+
+
+// ******* Kompressor ****//
+
+signed int c01_Min_vremya_raboty;
+signed int c02_Min_vremya_stoyanki;
+signed int c30_Rele_kompressora_doljno_vklyuchatsya_i_vyklyuchatsya_inversno;
+signed int c70_Vneshnie_rele;
+
+// ******* Ottaika ****// 
+signed int d01_Temperatura_ostanovki_ottaiki;
+signed int d02_Sposob_ottaiki; 
+signed int d03_Maksimalnaya_dlitelnost_ottaiki;
+signed int d04_Interval_mejdu_zapuskami_ottaiki;
+signed int d05_Smeschenie_vklyucheniya_ottaiki_vo_vremya_zapuska;
+signed int d06_Zaderjka_zapuska_ventilyatora_posle_ottaiki;
+signed int d07_Vremya_kapleobrazovaniya;
+signed int d08_Temperatura_nachala_raboty_ventilyatora;
+signed int d09_Datchik_ottaiki;
+signed int d10_Rabota_ventilyatora_vo_vremya_ottaiki;
+signed int d18_Maksimalnoe_summarnoe_vremya_ohlajdeniya_mejdu_dvumya_ottaikami;
+signed int d19_Ottaika_po_neobhodimosti; //_ _dopustimye_kolebaniya_temperatury_S5_pri_obmerzanii._Na_centralizovannoi_ustanovke_vyberite_20K_(=_Off)
+
+
+// ******* Ventilyator ****//
+
+signed int F01_Ostanovka_ventilyatora_pri_otklyuchenii_kompressora;
+signed int F02_Zaderjka_ventilyatora_pri_ostanovke_kompressora;
+signed int F04_Temperatura_ostanovki_ventilyatora;
+
+
+
+//chasi realnogo vremeni
+
+signed int t01_nastroika_chasov;
+signed int t02_nastroika_chasov;
+signed int t03_nastroika_chasov;
+signed int t04_nastroika_chasov;
+signed int t05_nastroika_chasov;
+signed int t06_nastroika_chasov;
+signed int t11_nastroika_minut;
+signed int t12_nastroika_minut;
+signed int t13_nastroika_minut;
+signed int t14_nastroika_minut;
+signed int t15_nastroika_minut;
+signed int t16_nastroika_minut;
+signed int t07_ustanovka_chasov;
+signed int t08_ustanovka_minut;
+signed int t45_ustanovka_dati;
+signed int t46_ustanovka_myasitsa;
+signed int t47_ustanovka_goda;
+
+
+
+
+
+
+
+
+
+// ******* Raznoe ****// 
+
+signed int o01_Zaderjka_vyhodnogo_signala_posle_zapuska;
+signed int o01_Setevoi_adres;
+signed int o06_Servisnoe_soobschenie;
+signed int o04_Parol_1;
+signed int o05_Ispolzuemyi_tip_datchika;
+signed int o15_Delenie_displeya;
+signed int o16_Maksimalnoe_vremya_ojidaniya_posle_koordinirovannoi_ottaiki;
+signed int o38_Konfiguraciya_funkcii_osvescheniya;
+signed int o39_Ruchnoe_vklyuchenie_rele_osvescheniya;
+
+
+// *******  Obsluzhivanie****//  
+
+
+signed int u10_Status_vhoda_DI;
+signed int u13_Status_nochnogo_rejima;
+signed int u28_Schitat_tekuschuyu_nastroiku_regulirovaniya;
+signed int u58_Sostoyanie_rele_ohlajdeniya;
+signed int u60_Sostoyanie_rele_ventilyatora;
+signed int u59_Sostoyanie_rele_ottaiki;
+
+signed int u71_Sostoyanie_rele_4;
+
+
+signed int u69_Temperatura_izmerennaya_datchikom_Sair;
+signed int u09_Temperatura_izmerennaya_datchikom_S5;
+signed int Temperatura;
+signed int Ustavka;
+                    
+ 
+//**************** Flags  ***************** 
+
+char fl_Kompressor_On;
+char fl_Ventilator_On;
+
+char fl_Ventilator_Off;
+
+char fl_Button_Ok_On;
+char fl_Button_Ok_Long_On;
+char fl_Button_Cancel_On;
+char fl_Button_Up_On;
+char fl_Button_Down_On;
+
+
+
+//**************** Systick Flags ***************** 
+
+char fl_SysTick_Main_Cycle; 
+char fl_SysTick_Vetilator;
+//char fl_SysTick_LEDs;
+//char fl_SysTick_TCP232;
+//char fl_SysTick_RS485;
+//char fl_SysTick_ADC;   
+
+
+}  Settings;
+
+Settings currentSettings;
+const Settings factorySettings = {
+	2,
+	2,
+	50,
+	-50,
+	0,
+	0,
+	0,
+	1,
+	0,
+	0,
+	0,
+	30,
+	60,
+	90,
+	8,
+	-30,
+	30,
+	50,
+	0,
+	0,
+	0,
+	1,
+	2,
+	6,
+	8,
+	45,
+	0,
+	0,
+	0,
+	-5,
+	1,
+	0,
+	0,
+	20,
+	0,
+	0,
+	50,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	1,
+	1,
+	0,
+	5,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	20,
+	1,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	2
+	
+	
+	
+};
+
+void factoryReset(){
+	
+	
+	 currentSettings = factorySettings; 
+	
+	
+}
+
 
 
 enum MenuLevel {
@@ -78,7 +308,7 @@ void MX_GPIO_Init(void);
 void MX_TIM3_Init(void);
 void Error_Handler(void);
 void debounce_buttons(void);
- int temprature = 335;  
+
 //void TimerHandler() {
 //    static int lastUpdateTime = 0;
 //  if ((HAL_GetTick() - lastUpdateTime) >= 1) {
@@ -86,6 +316,7 @@ void debounce_buttons(void);
 //        lastUpdateTime = HAL_GetTick();
 //    }
 //}  
+ int temprature=-335; 
 void handle_menu_logic(void) {
     switch (menu_position) {
         
@@ -100,6 +331,13 @@ void handle_menu_logic(void) {
          buttonFlagForward = 0;
          buttonFlagBackward = 0;
      }
+						if(buttonFlagConfirm){
+			      buttonFlagConfirm=0;
+		}
+		 if (buttonFlagCancel) {
+            
+			       buttonFlagCancel=0;
+        }
      
 
 				
@@ -153,6 +391,37 @@ void handle_menu_logic(void) {
        
 
     case PARAMETER_ADJUSTMENT:
+			
+			parameter_adjust_and_display(selected_parameter,3);
+		
+			if(buttonFlagForward)
+			{
+				parameter_adjust_and_display(selected_parameter,0);
+				buttonFlagForward=0;
+				
+			}
+			if(buttonFlagBackward)
+			{
+				parameter_adjust_and_display(selected_parameter,1);
+				buttonFlagBackward=0;
+				
+			}
+			if(buttonFlagConfirm)
+			{
+				parameter_adjust_and_display(selected_parameter,2);
+				buttonFlagConfirm=0;
+						
+			}
+			
+			if (buttonFlagCancel)
+			{
+				menu_position = MAIN_SCREEN;
+			  buttonFlagCancel=0;
+				
+				
+			}
+				
+			
 //			temprature=+1;
 //		temprature_display(temprature);
 //		menu_position=MAIN_SCREEN;

@@ -63,7 +63,9 @@
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim3;
 /* USER CODE BEGIN EV */
-
+const uint32_t INACTIVITY_TIME = 300000;//time in ms for inactivity
+ 
+const char DEBOUNCE_THRESHOLD_MS=50;//debounce time
 /* USER CODE END EV */
 
 /******************************************************************************/

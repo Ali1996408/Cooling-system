@@ -33,4 +33,4 @@ task1_cooling_system/stm32f0xx_it.o: ..\Core\Src\stm32f0xx_it.c \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_tim.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_gpio.h \
   ..\Drivers\STM32F0xx_HAL_Driver\Inc\stm32f0xx_ll_bus.h \
-  ..\Core\Inc\7_Segment.h
+  ..\Core\Inc\7_Segment.h C:\Keil_v5\ARM\ARMCLANG\include\string.h

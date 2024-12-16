@@ -3,10 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
 
+int  part0, part1, part2, counter = 0, tempType=0;
 
-int  part0, part1, part2, counter = 0;
-
+		
+ 
 // Masks for 7-segment display
 int mask(int num) {
     switch (num) {
@@ -26,16 +28,16 @@ int mask(int num) {
 }
 int maskFourthDigit(int num) {
     switch (num) {
-        case 0: return 0b00111111; // Segments: ABCDEF
-        case 1: return 0b00000110; // Segments: BC
-        case 2: return 0b01011011; // Segments: ABDEG
-        case 3: return 0b01001111; // Segments: ABCDG
-        case 4: return 0b01100110; // Segments: BCFG
-        case 5: return 0b01101101; // Segments: ACFDG
-        case 6: return 0b01111101; // Segments: ACDEFG
-        case 7: return 0b00000111; // Segments: ABC
-        case 8: return 0b01111111; // Segments: ABCDEFG
-        case 9: return 0b01101111; // Segments: ABCDFG
+        case 0: return 0b00100000; // Segments: ABCDEF
+        case 1: return 0b01000000; // Segments: BC
+//        case 2: return 0b01011011; // Segments: ABDEG
+//        case 3: return 0b01001111; // Segments: ABCDG
+//        case 4: return 0b01100110; // Segments: BCFG
+//        case 5: return 0b01101101; // Segments: ACFDG
+//        case 6: return 0b01111101; // Segments: ACDEFG
+//        case 7: return 0b00000111; // Segments: ABC
+//        case 8: return 0b01111111; // Segments: ABCDEFG
+//        case 9: return 0b01101111; // Segments: ABCDFG
         default: return 0b00000000; // All segments off
 			  case -1: return 0b11111111;
     }
@@ -56,6 +58,10 @@ int mask_charecters(char index) {
 				   case 'c': return 0b01011000; // Example mask for 'c'
            case 't': return 0b01110000; // Example mask for 't'
            case 'o': return 0b01011100; // Example mask for 'o'
+				   case 'E': return 0b01111001;
+				   case 'L': return 0b00111000;
+				   case 'g': return 0b01101111;
+				   case 'a': return 0b01011111;
 
            default: return 0b00000000;  // All segments off
        }
@@ -151,11 +157,25 @@ void temprature_display(int temp) {
             displayDigit(part0, 9, 1); // First digit
             currentStep++;
             break;
+				case 5:
+					if(tempType==1)
+					{
+						displayDigit(1,8,4);
+					}
+					else if (tempType==0)
+						
+					{
+					displayDigit(0,8,4);
 
-        case 5: // Fourth digit (Custom)
-            displayDigit(part0, 8, 4); // Fourth digit (Custom pattern)
-            currentStep = 0; // Reset to the first digit
-            break;
+					}
+					currentStep=0;
+					break;
+				
+
+//        case 5: // Fourth digit (Custom)
+//            displayDigit(part0, 8, 4); // Fourth digit (Custom pattern)
+//            currentStep = 0; // Reset to the first digit
+//            break;
 				 default:
             // Reset the state machine to restart display
             currentStep = 0;
@@ -210,13 +230,242 @@ void parameter_display(int index) {
             break;  
     }
 }
+// {-500, 500},   // Index 0: Range 0–99
+//    {1, 200},   // Index 1: Range 0–31
+//    {-490, 500},   // Index 2: Range 0–59
+//    {-500, 490}, // Index 3: Range -50–50
+//    {-200, 200},
+//    {0, 10},
+//    {-100, 100},		// Index 4: Range 0–240
+//		{-10,10},
+//		{-100,100},
+//		{-500,500},
+//		{0,2400},
+//		{0,990},
+//		{0,300},
+//		{0,300},
+//		{0,250},
+//		{0,480},
+//		{0,1800},
+//		{0,2400},
+//		{0,600},
+//		{0,600},
+//		{-150,0},
+//		{0,20},
+//		{0,20},
+//		{0,480},
+//		{0,200},
+//		{0,300},
+//		{-500,500},
+//		{0,230},
+//		{0,230},
+//		{0,230},
+//		{0,230},
+//		{0,230},
+//		{0,230},
+//		{0,590},
+//		{0,590},
+//		{0,590},
+//		{0,590},
+//		{0,590},
+//		{0,590},
+//		{0,230},
+//		{0,590},
+//		{10,310},
+//		{10,120},
+//		{0,990},
+//		{0,6000},
+//		{0,110},
+//		{0,240},
+//		{0,1000},
+//		{0,600},
+//		{10,30},
+//		{0,20},
+//		{0,1000},
+//		{0,250},
+//		{0,250},
+//		{0,20},
+//		{10,20},
+//		 {"OFF", "ON"},  // Index 5: Text values
+//    {"OFF", "ON"},        // Index 6: Text values
+//    {"no", "gas"},
+//    {"no", "yes"},
+//    {"OFF", "ON"},	
+//    {"Pt","ntc"},
+//		{"OFF", "ON"},
+//		{"OFF", "ON"},
 
+// Parameter adjustment function
+void parameter_adjust_and_display(int paramIndex, int action) {
+    // Define your Parameter structure
+    typedef struct {
+        char code[4];           // Parameter code (e.g., "r01")
+        int type;               // 0 for numeric, 1 for categorical
+        int minValue;           // Minimum value (for numeric parameters)
+        int maxValue;           // Maximum value (for numeric parameters)
+        char *options[3];       // Options for categorical parameters (e.g., {"Off", "On"})
+        int currentValue;       // Current value (or index for categorical)
+    } Parameter;
 
-	
-	
-	
-	
-	
-	
-	
-	
+    // Static array of parameters
+    static Parameter parameters[] = {
+        {"---", 0, -50, 50, {NULL, NULL}, 2}, // Numeric parameter, range 0-100
+        {"r01", 0, 1, 200, {NULL, NULL}, 20}, // Numeric parameter, range 10-50
+        {"r02", 0, -49, 50, {NULL, NULL}, 50}, // Numeric parameter, range 10-50
+        {"r03", 0, -50, 49, {NULL, NULL}, -50},
+        {"r04", 0, -20, 20, {NULL, NULL}, 0},	
+        {"r05", 1, 0, 0, {" ", " "}, 0},
+        {"r09", 0, -10, 10, {NULL, NULL}, 0},
+        {"r12", 0, -1, 1, {NULL, NULL}, 0},		
+        {"r13", 0, -10, 10, {NULL, NULL}, 0},						
+        {"r39", 1, 0, 0, {"OFF", "On"}, 0},	// Categorical parameter (Off/On)				
+				{"r40", 0, -50, 50, {NULL, NULL}, 0},
+        {"A03", 0 , 0, 240, {NULL, NULL}, 30},	
+        {"A04", 0, 0, 240, {NULL, NULL}, 60},	
+        {"A12", 0, 0, 240, {NULL, NULL}, 90},	
+				{"A13", 0, -50, 50, {NULL, NULL}, 8},
+        {"A14", 0, -50, 50, {NULL, NULL}, -30},	
+        {"A27", 0, 0, 240, {NULL, NULL}, 30},	
+        {"A37", 0, 0, 99, {NULL, NULL}, 50},
+        {"c01", 0, 0, 30, {NULL, NULL}, 0},
+        {"c02", 0, 0, 30, {NULL, NULL}, 0},
+        {"c30", 1, 0, 0, {"OFF", "On"}, 0},
+        {"c70", 1, 0, 0, {"OFF", "On"}, 0},
+        {"d01", 1, 0, 2, {"no","EL", "gas"}, 1},				
+       				
+    };
+
+    // Ensure the provided index is valid
+    int parameterCount = sizeof(parameters) / sizeof(parameters[0]);
+    if (paramIndex < 0 || paramIndex >= parameterCount) {
+        return; // Invalid index, exit function
+    }
+
+    // Get reference to the specific parameter
+    Parameter *param = &parameters[paramIndex];
+
+    // Static variables to manage display and multiplexing
+    static char displayBuffer[4] = "   "; // Temporary display content
+    static int currentStep = 0;          // Display digit step for multiplexing
+
+    // Adjust parameter value based on action (button press)
+    switch (action) {
+        case 0: // Increment
+            if (param->type == 0 && param->currentValue < param->maxValue) {
+                param->currentValue++;
+            } else if (param->type == 1) { // Categorical toggle
+                param->currentValue = (param->currentValue + 1) % 2;
+            }
+            break;
+
+        case 1: // Decrement
+            if (param->type == 0 && param->currentValue > param->minValue) {
+                param->currentValue--;
+            } else if (param->type == 1) { // Categorical toggle
+                param->currentValue = (param->currentValue + 1) % 2;
+            }
+            break;
+
+        case 2: // Confirm and save
+            // save_parameter_value(param); // Save value if implemented
+            return; // No further display update needed
+           
+        case 3: // Refresh display without changing the parameter
+
+            break; // No parameter adjustment, just refresh the display
+           
+        default:
+            break;
+    }
+
+    // Always update display buffer (no need for needsUpdate flag)
+    if (param->type == 0) { // Numeric values
+        snprintf(displayBuffer, sizeof(displayBuffer), "%03d", param->currentValue);
+    } else if (param->type == 1) { // Categorical values
+        strncpy(displayBuffer, param->options[param->currentValue], 3);
+        displayBuffer[3] = '\0'; // Ensure null termination
+    }
+
+    // Handle multiplexed digit display
+    char charToDisplay = displayBuffer[currentStep]; // Get the current digit/character to show
+		
+
+    // Call the displayDigit function for the corresponding digit
+	  bool isNegative = (displayBuffer[0] == '-'); // Check if negative
+		 if (isNegative) {
+			 displayBuffer[0]='0';
+        }
+		 
+    switch (currentStep) {
+      
+          case 0: // First step: Show the negative sign separately
+        if (isNegative) {
+            displayDigit(-1, 10, 2); // Display the negative sign (-) in a specific position
+        } 
+            currentStep++;
+            break;
+            
+        case 1:
+          displayDigit(displayBuffer[0] , 11, 5);
+           // Display the digit/character
+            currentStep++;
+            break;
+
+        case 2: // Second digit (middle)
+            displayDigit(displayBuffer[1] , 10, 5); // Display the digit/character
+            currentStep++;
+            break;
+
+        case 3: // Third digit (right-most)
+           
+            displayDigit(displayBuffer[2] , 9, 5);        // Display the digit/character
+            currentStep++;
+            break;
+				
+				case 4:
+					if (strcmp(param->code, "r01") == 0)
+						{
+							displayDigit(-1, 9, 1); 
+						 
+						
+					   }
+						currentStep++;
+						   break;
+				case 5:
+		if (strcmp(param->code, "r05") == 0)
+
+						
+					{
+						if(param->currentValue == 0)
+						{
+							
+							displayDigit(0,8,4);
+						}
+						else
+						{
+								
+							displayDigit(1,8,4);
+						}
+						currentStep++;
+						   break;
+						
+					}
+					
+				case 6:
+					
+						if (!(strcmp(param->code, "r01") == 0 && param->type == 0))
+						{
+							
+						displayDigit(0,8,4);
+							
+						}
+				currentStep=0;
+				  break;
+					
+
+        default:
+            currentStep = 0;
+            break;
+    }
+
+}
