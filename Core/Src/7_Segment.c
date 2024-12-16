@@ -62,6 +62,10 @@ int mask_charecters(char index) {
 				   case 'L': return 0b00111000;
 				   case 'g': return 0b01101111;
 				   case 'a': return 0b01011111;
+				   case 'y': return 0b01101110;
+				   case 'e': return 0b01111011;
+				 
+				  
 
            default: return 0b00000000;  // All segments off
        }
@@ -196,7 +200,7 @@ void parameter_display(int index) {
         "r40", "A03", "A04", "A12", "A13", "A14", "A27", "A37", "c01", "c02", 
         "c30", "c70", "d01", "d02", "d03", "d04", "d05", "d06", "d07", "d08", 
         "d09", "d10", "d18", "d19", "F01", "F02", "F04", "t01", "t02", "t03", 
-        "t04", "t05", "t06", "t11", "t12", "t13", "t14", "t15", "t16", "t45",
+        "t04", "t05", "t06","t07","t08", "t11", "t12", "t13", "t14", "t15", "t16", "t45",
         "t46", "t47", "o01", "o02", "o03", "o04", "o05", "o06", "o15", "o16", 
         "o38", "o39", "o46", "o64", "o65", "o66", "o67", "o70", "o72", "u09", 
         "u10", "u13", "u28", "u58", "u59", "u60", "u69", "u71"
@@ -310,7 +314,7 @@ void parameter_adjust_and_display(int paramIndex, int action) {
     // Static array of parameters
     static Parameter parameters[] = {
         {"---", 0, -50, 50, {NULL, NULL}, 2}, // Numeric parameter, range 0-100
-        {"r01", 0, 1, 200, {NULL, NULL}, 20}, // Numeric parameter, range 10-50
+        {"r01", 0, 1, 200, {NULL, NULL}, 20}, // Numeric parameter, range 0.1-20K
         {"r02", 0, -49, 50, {NULL, NULL}, 50}, // Numeric parameter, range 10-50
         {"r03", 0, -50, 49, {NULL, NULL}, -50},
         {"r04", 0, -20, 20, {NULL, NULL}, 0},	
@@ -331,8 +335,57 @@ void parameter_adjust_and_display(int paramIndex, int action) {
         {"c02", 0, 0, 30, {NULL, NULL}, 0},
         {"c30", 1, 0, 0, {"OFF", "On"}, 0},
         {"c70", 1, 0, 0, {"OFF", "On"}, 0},
-        {"d01", 1, 0, 2, {"no","EL", "gas"}, 1},				
-       				
+        {"d01", 1, 0, 2, {"no","EL", "gas"}, 1},	
+        {"d02", 0, 0, 25, {NULL, NULL}, 6},	
+        {"d03", 0, 0, 48, {NULL, NULL}, 8},
+        {"d04", 0, 0, 180, {NULL, NULL}, 45},
+        {"d05", 0, 0, 240, {NULL, NULL}, 0},
+        {"d06", 0, 0, 60, {NULL, NULL}, 0},	
+        {"d07", 0, 0, 60, {NULL, NULL}, 0},					
+        {"d08", 0, -15, 0, {NULL, NULL}, -5},
+        {"d09", 0, 0, 2, {NULL, NULL}, 1},
+        {"d10", 0, 0, 2, {NULL, NULL}, 0},
+        {"d18", 0, 0, 48, {NULL, NULL}, 0},	
+        {"d19", 0, 0, 20, {NULL, NULL}, 20},	
+        {"F01", 1, 0, 0, {"no", "yes"}, 0},
+        {"F02", 0, 0, 30, {NULL, NULL}, 0},
+        {"F04", 0, -50, 50, {NULL, NULL}, 50},
+        {"t01", 0, 0, 23, {NULL, NULL}, 0},	
+				{"t02", 0, 0, 23, {NULL, NULL}, 0},
+        {"t03", 0, 0, 23, {NULL, NULL}, 0},	
+        {"t04", 0, 0, 23, {NULL, NULL}, 0},
+        {"t05", 0, 0, 23, {NULL, NULL}, 0},	
+        {"t06", 0, 0, 23, {NULL, NULL}, 0},	
+        {"t07", 0, 0, 23, {NULL, NULL}, 0},
+        {"t08", 0, 0, 59, {NULL, NULL}, 0},
+        {"t11", 0, 0, 59, {NULL, NULL}, 0},
+        {"t12", 0, 0, 59, {NULL, NULL}, 0},				
+   			{"t13", 0, 0, 59, {NULL, NULL}, 0},	
+				{"t14", 0, 0, 59, {NULL, NULL}, 0},
+        {"t15", 0, 0, 59, {NULL, NULL}, 0},	
+        {"t16", 0, 0, 59, {NULL, NULL}, 0},
+        {"t45", 0, 1, 31, {NULL, NULL}, 1},
+        {"t46", 0, 1, 12, {NULL, NULL}, 1},
+        {"t47", 0, 0, 99, {NULL, NULL}, 0},	
+        {"o01", 0, 0, 600, {NULL, NULL}, 5},
+        {"o02", 0, 11, 0, {NULL, NULL}, 0},
+				{"o03", 0, 0, 240, {NULL, NULL}, 0},
+				{"o04", 1, 0, 0, {"OFF", "On"}, 0},
+				{"o05", 0, 0, 100, {NULL, NULL}, 0},
+        {"o06", 1, 0, 0, {"Pt", "ntc"}, 0},
+        {"o15", 1, 0, 0, {"no", "yes"}, 0},
+        {"o16", 0, 0, 60, {NULL, NULL}, 20},
+        {"o38", 0, 1, 3, {NULL, NULL}, 1},
+        {"o39", 1, 0, 0, {"OFF", "On"}, 0},
+        {"o46", 0, 0, 2, {NULL, NULL}, 0},
+        {"o64", 0, 0, 100, {NULL, NULL}, 0},
+        {"o65", 0, 0, 25, {NULL, NULL}, 0},
+        {"o66", 0, 0, 25, {NULL, NULL}, 0},	
+        {"o67",  1, 0, 0, {"OFF", "On"}, 0},
+				{"o70",  0, 0, 2, {NULL, NULL}, 0},
+				{"o72",  0, 1, 2, {NULL, NULL}, 2},
+        				
+				
     };
 
     // Ensure the provided index is valid
@@ -348,23 +401,36 @@ void parameter_adjust_and_display(int paramIndex, int action) {
     static char displayBuffer[4] = "   "; // Temporary display content
     static int currentStep = 0;          // Display digit step for multiplexing
 
-    // Adjust parameter value based on action (button press)
-    switch (action) {
-        case 0: // Increment
-            if (param->type == 0 && param->currentValue < param->maxValue) {
-                param->currentValue++;
-            } else if (param->type == 1) { // Categorical toggle
-                param->currentValue = (param->currentValue + 1) % 2;
-            }
-            break;
+switch (action) {
+    case 0: // Increment
+        if (param->type == 0 && param->currentValue < param->maxValue) { 
+            // Numeric: increment within range
+            param->currentValue++;
+        } else if (param->type == 1) { // Categorical: increment
+            // Determine the number of options
+            int numOptions = (param->options[2] == NULL) ? 2 : 3;
 
-        case 1: // Decrement
-            if (param->type == 0 && param->currentValue > param->minValue) {
-                param->currentValue--;
-            } else if (param->type == 1) { // Categorical toggle
-                param->currentValue = (param->currentValue + 1) % 2;
+            // Increment only if not at the last option
+            if (param->currentValue < numOptions - 1) {
+                param->currentValue++;
             }
-            break;
+        }
+        break;
+
+    case 1: // Decrement
+        if (param->type == 0 && param->currentValue > param->minValue) { 
+            // Numeric: decrement within range
+            param->currentValue--;
+        } else if (param->type == 1) { // Categorical: decrement
+            // Decrement only if not at the first option
+            if (param->currentValue > 0) {
+                param->currentValue--;
+            }
+        }
+        break;
+
+
+
 
         case 2: // Confirm and save
             // save_parameter_value(param); // Save value if implemented
@@ -446,21 +512,20 @@ void parameter_adjust_and_display(int paramIndex, int action) {
 								
 							displayDigit(1,8,4);
 						}
-						currentStep++;
+						currentStep=0;
 						   break;
 						
 					}
 					
-				case 6:
-					
-						if (!(strcmp(param->code, "r01") == 0 && param->type == 0))
-						{
-							
-						displayDigit(0,8,4);
-							
-						}
-				currentStep=0;
-				  break;
+//				case 6:
+//					
+//if (!(strcmp(param->code, "r01") == 0 || param->type == 1))
+//                    {
+//                      displayDigit(0, 8, 4);
+//                      }
+
+//				currentStep=0;
+//				  break;
 					
 
         default:

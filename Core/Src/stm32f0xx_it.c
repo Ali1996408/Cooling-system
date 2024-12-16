@@ -159,7 +159,7 @@ void EXTI4_15_IRQHandler(void)
         __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_6);  // Clear interrupt flag
         if (button_debounce_timer[0] == 0) {
             button_debounce_timer[0] = DEBOUNCE_THRESHOLD_MS;
-            buttonFlagForward = 1;
+            buttonFlagBackward = 1;
 					inactivity_timer=INACTIVITY_TIME;
            HAL_GPIO_TogglePin(GPIOA, LED1_Pin);
         }
@@ -183,7 +183,7 @@ void EXTI4_15_IRQHandler(void)
         __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_8);  // Clear interrupt flag
         if (button_debounce_timer[2] == 0) {
             button_debounce_timer[2] = DEBOUNCE_THRESHOLD_MS;
-            buttonFlagBackward = 1;
+            buttonFlagForward = 1;
             HAL_GPIO_TogglePin(GPIOA, LED3_Pin);
 					inactivity_timer=INACTIVITY_TIME;
         }

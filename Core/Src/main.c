@@ -34,7 +34,7 @@
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
-#define TOTAL_PARAMETERS 78
+#define TOTAL_PARAMETERS 80
 
 volatile int button_debounce_timer[4] = {0, 0, 0, 0}; // Debounce timers for 4 buttons
 volatile char buttonFlagForward = 0; // forward button flag
