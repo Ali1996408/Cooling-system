@@ -318,137 +318,154 @@ void debounce_buttons(void);
 //}  
  int temprature=-335; 
 void handle_menu_logic(void) {
+    // Timestamps for button auto-repeat logic
+    static uint32_t forward_hold_time = 0;
+    static uint32_t backward_hold_time = 0;
+    static uint32_t last_repeat_time = 0;
+
+    // Auto-reset repeat delay (in milliseconds)
+    uint32_t repeat_delay = 300;  // Initial delay before auto-repeat
+    uint32_t repeat_rate = 100;   // Auto-repeat action every 100ms
+
+    // Handle different menu positions
     switch (menu_position) {
         
-    case MAIN_SCREEN:
-        // Display the temperature
-        temprature_display(temprature);
+        case MAIN_SCREEN:
+            // 1. Display the current temperature
+            temprature_display(temprature);
 
-        // Check navigation buttons
+            // 2. Navigate to PARAMETER_SELECTION on forward/backward press
             if (buttonFlagForward || buttonFlagBackward) {
-         menu_position = PARAMETER_SELECTION;
-         selected_parameter = 0;
-         buttonFlagForward = 0;
-         buttonFlagBackward = 0;
-     }
-						if(buttonFlagConfirm){
-			      buttonFlagConfirm=0;
-		}
-		 if (buttonFlagCancel) {
-            
-			       buttonFlagCancel=0;
-        }
-     
+                menu_position = PARAMETER_SELECTION;
+                selected_parameter = 0;
+                buttonFlagForward = 0;
+                buttonFlagBackward = 0;
+            } else if (buttonFlagConfirm) {
+                buttonFlagConfirm = 0;
+            } else if (buttonFlagCancel) {
+                buttonFlagCancel = 0;
+            }
+            break;
 
+        case PARAMETER_SELECTION:
+            // 1. Display the currently selected parameter
 				
-				
-        break;
+            parameter_display(selected_parameter);
 
-    case PARAMETER_SELECTION:
-//        // Display parameter index and value
-//        display_parameter(selected_parameter, get_parameter_value(selected_parameter));
-		       parameter_display(selected_parameter);
-		
-		 if (buttonFlagForward){
-            selected_parameter++;
-		  buttonFlagForward = 0;
-		 }
-        else if (buttonFlagBackward)
-				{
-            selected_parameter--;
-					  buttonFlagBackward = 0;
+            // 2. Handle button "Forward" with auto-repeat
+            if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8) == GPIO_PIN_RESET) // FORWARD button held
+            {
+                uint32_t now = HAL_GetTick(); // Get current time
+                if (forward_hold_time == 0) forward_hold_time = now; // Start hold timer
+
+                // Check for initial delay or repeat interval
+                if (((now - forward_hold_time > repeat_delay) && (now - last_repeat_time > repeat_rate)) ||
+                    (buttonFlagForward)) {
+                    
+                    selected_parameter++;
+                    last_repeat_time = now; // Update last repeat time
+                    buttonFlagForward = 0; // Clear normal flag
+                }
+            } else {
+                forward_hold_time = 0; // Reset hold timer on release
+            }
+
+            // 3. Handle button "Backward" with auto-repeat
+            if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == GPIO_PIN_RESET) // BACKWARD button held
+            {
+                uint32_t now = HAL_GetTick(); // Get current time
+                if (backward_hold_time == 0) backward_hold_time = now; // Start hold timer
+
+                // Check for initial delay or repeat interval
+                if (((now - backward_hold_time > repeat_delay) && (now - last_repeat_time > repeat_rate)) || 
+                    (buttonFlagBackward)) {
+                    
+                    selected_parameter--;
+                    last_repeat_time = now; // Update last repeat time
+                    buttonFlagBackward = 0; // Clear normal flag
+                }
+            } else {
+                backward_hold_time = 0; // Reset hold timer on release
+            }
+
+            // Prevent out-of-bound parameter selections
+            if (selected_parameter < 0) selected_parameter = 0;
+            if (selected_parameter >= TOTAL_PARAMETERS) selected_parameter = TOTAL_PARAMETERS - 1;
+
+            // 4. Change state with CONFIRM or CANCEL
+            if (buttonFlagConfirm) {
+                menu_position = PARAMETER_ADJUSTMENT;
+                buttonFlagConfirm = 0;
+            } else if (buttonFlagCancel) {
+                menu_position = MAIN_SCREEN;
+                buttonFlagCancel = 0;
+            }
+            break;
+
+        case PARAMETER_ADJUSTMENT:
 					
-				}
-				 if (selected_parameter < 0) selected_parameter = 0;
-         if (selected_parameter >= TOTAL_PARAMETERS) selected_parameter = TOTAL_PARAMETERS - 1;
-		if(buttonFlagConfirm){
-			 menu_position = PARAMETER_ADJUSTMENT;
-			buttonFlagConfirm=0;
-		}
-		else if (buttonFlagCancel) {
-            menu_position = MAIN_SCREEN;
-			       buttonFlagCancel=0;
+				parameter_adjust_and_display(selected_parameter,3);
+    // Forward button functionality (Auto-repeat enabled)
+    if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8) == GPIO_PIN_RESET) {
+        uint32_t now = HAL_GetTick(); // Get current time
+        if (forward_hold_time == 0) {
+            forward_hold_time = now;     // Start hold timer
         }
-		 break;
-//        // Navigation
-//        if (buttonFlagForward)
-//            selected_parameter++;
-//        else if (buttonFlagBackward)
-//            selected_parameter--;
 
-//        // Constrain parameter selection
-//        if (selected_parameter < 0) selected_parameter = 0;
-//        if (selected_parameter >= TOTAL_PARAMETERS) selected_parameter = TOTAL_PARAMETERS - 1;
-
-//        // Confirm selection
-//        if (buttonFlagConfirm) {
-//            menu_position = PARAMETER_ADJUSTMENT;
-//        }
-//        // Cancel to return to main screen
-//        else if (buttonFlagCancel) {
-//            menu_position = MAIN_SCREEN;
-//        }
-       
-
-    case PARAMETER_ADJUSTMENT:
+        // If holding button, trigger action after initial delay or repeat rate
+        if (((now - forward_hold_time > repeat_delay) && (now - last_repeat_time > repeat_rate)) ||
+            buttonFlagForward) {
+            parameter_adjust_and_display(selected_parameter, 0); // Increment parameter
+            last_repeat_time = now;     // Update repeat timer
+            buttonFlagForward = 0;      // Clear normal flag
+        }
+    } else {
+        forward_hold_time = 0; // Reset hold timer when button released
+	
 			
-			parameter_adjust_and_display(selected_parameter,3);
-		
-			if(buttonFlagForward)
-			{
-				parameter_adjust_and_display(selected_parameter,0);
-				buttonFlagForward=0;
-				
-			}
-			if(buttonFlagBackward)
-			{
-				parameter_adjust_and_display(selected_parameter,1);
-				buttonFlagBackward=0;
-				
-			}
-			if(buttonFlagConfirm)
-			{
-				parameter_adjust_and_display(selected_parameter,2);
-				buttonFlagConfirm=0;
-						
-			}
-			
-			if (buttonFlagCancel)
-			{
-				menu_position = MAIN_SCREEN;
-			  buttonFlagCancel=0;
-				
-				
-			}
-				
-			
-//			temprature=+1;
-//		temprature_display(temprature);
-//		menu_position=MAIN_SCREEN;
-		
-		break;
-		
-        // Display current selected parameter value
-//        display_parameter(selected_parameter, get_parameter_value(selected_parameter));
+    }
 
-//        // Adjust value with forward/backward
-//        if (buttonFlagForward)
-//       //     adjust_parameter_value(selected_parameter, 1);  // Increment
-//        else if (buttonFlagBackward)
-//            adjust_parameter_value(selected_parameter, -1);  // Decrement
+    // Backward button functionality (Auto-repeat enabled)
+    if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == GPIO_PIN_RESET) {
+        uint32_t now = HAL_GetTick(); // Get current time
+        if (backward_hold_time == 0) {
+            backward_hold_time = now;  // Start hold timer
+        }
 
-        // Confirm change or cancel
-//        if (buttonFlagConfirm) {
-//            save_parameter_value(selected_parameter);  // Save the new value
-//            menu_position = PARAMETER_SELECTION;  // Return to selection
-//        } else if (buttonFlagCancel) {
-//            menu_position = PARAMETER_SELECTION;  // Cancel adjustment
-//        }
-		default:
-			menu_position= MAIN_SCREEN;
-        
+        // If holding button, trigger action after initial delay or repeat rate
+        if (((now - backward_hold_time > repeat_delay) && (now - last_repeat_time > repeat_rate)) ||
+            buttonFlagBackward) {
+            parameter_adjust_and_display(selected_parameter, 1); // Decrement parameter
+            last_repeat_time = now;      // Update repeat timer
+            buttonFlagBackward = 0;      // Clear normal flag
+        }
+    } else {
+        backward_hold_time = 0; // Reset hold timer when button released
+			
+    }
+
+    // Confirm adjustment when confirm button is pressed
+    if (buttonFlagConfirm) {
+        parameter_adjust_and_display(selected_parameter, 2); // Confirm adjustment
+        buttonFlagConfirm = 0;
+    }
+
+    // Cancel adjustment and return to MAIN_SCREEN
+    if (buttonFlagCancel) {
+        menu_position = MAIN_SCREEN;
+        buttonFlagCancel = 0;
+    }
+
+    break;
+		
+				default:
+					menu_position=MAIN_SCREEN;
+
     }
 }
+
+
+
 
 
 

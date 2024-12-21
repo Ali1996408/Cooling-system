@@ -531,6 +531,7 @@ switch (action) {
         default:
             currentStep = 0;
             break;
+			
     }
 
 }
