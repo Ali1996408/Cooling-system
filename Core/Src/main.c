@@ -316,7 +316,7 @@ void debounce_buttons(void);
 //        lastUpdateTime = HAL_GetTick();
 //    }
 //}  
- int temprature=-335; 
+ int temprature=335; 
 void handle_menu_logic(void) {
     // Timestamps for button auto-repeat logic
     static uint32_t forward_hold_time = 0;

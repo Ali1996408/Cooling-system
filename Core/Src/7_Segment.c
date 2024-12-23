@@ -104,91 +104,56 @@ void displayDigit(int digitValue, int enablePin, int segmentType) {
 }
 
 void temprature_display(int temp) {
-    char isNegative = 0;
-    if (temp < 0) {
-        
-        isNegative = 1;
-    }
-
-    // Break number into individual digits
-    part0 = abs(temp) % 10;           // Ones
-    part1 = (abs(temp) / 10) % 10;    // Tens
-    part2 = (abs(temp) / 100) % 10;   // Hundreds
-
-    // Use a state machine or call this function sequentially to display digits
-		
-						
-		
+    // Preprocess variables to hold digit values and flags
+    int segments[3] = {0};   // Digits: Hundreds = segments[2], Tens = segments[1], Ones = segments[0]
+    int IsNegative = 0;    // Symbol: -1 = dot (.), -2 = negative sign (-)
+    int displayUnit = 0;     // Default unit (Celsius = 0, Fahrenheit = 1)
     static int currentStep = 0;
-		
-		
 
-    switch (currentStep) {
-			
-			 case 0:
-		if (isNegative) {
-         displayDigit(-1, 10, 2); // Display Negative sign for Tens
-			
-					
-            }
-		       
-		  currentStep++;
-            break;  
-			 case 1:
-				displayDigit(-1, 9, 1); 
-			  currentStep++;
-            break; 
-			 
-						
-        case 2: // Third digit (Hundreds)
-            displayDigit(part2, 11, 3); // Third digit
-            currentStep++;
-            break;
-
-        case 3: // Second digit (Tens)
-						
-					 
-                displayDigit(part1, 10, 2); // Second digit
-            
-            
-					
-					currentStep++;
-				
-            break;
-				
-
-        case 4: // First digit (Ones)
-            displayDigit(part0, 9, 1); // First digit
-            currentStep++;
-            break;
-				case 5:
-					if(tempType==1)
-					{
-						displayDigit(1,8,4);
-					}
-					else if (tempType==0)
-						
-					{
-					displayDigit(0,8,4);
-
-					}
-					currentStep=0;
-					break;
-				
-
-//        case 5: // Fourth digit (Custom)
-//            displayDigit(part0, 8, 4); // Fourth digit (Custom pattern)
-//            currentStep = 0; // Reset to the first digit
-//            break;
-				 default:
-            // Reset the state machine to restart display
-            currentStep = 0;
-            break;
-				
-				
-			
-			
+    // Handle negative temperatures
+    if (temp < 0) {
+        IsNegative = 1;  // Set negative sign
+               // Convert to positive for further processing
     }
+
+    // Extract digits
+    segments[0] = abs(temp) % 10;                // Ones place
+    segments[1] = (abs(temp) / 10) % 10;         // Tens place
+    segments[2] = (abs(temp) / 100) % 10;        // Hundreds place
+
+   
+
+    // Ensure the step loops between 0 and 5
+    currentStep %= 6;
+
+    // Multiplexing logic
+    switch (currentStep) {
+        case 0:
+					if(IsNegative==1)
+					{
+            // This case is for negative sign only
+            displayDigit(-1, 10, 2); // Display "-" (only if temp < 0)
+					}
+            break;
+        case 1:
+            displayDigit(segments[1], 10, 2);  // Tens place
+            break;
+        case 2:
+            displayDigit(segments[0], 9, 1);   // Ones place
+            break;
+        case 3:
+            displayDigit(segments[2], 11, 3);  // Hundreds place
+            break;
+        case 4:
+            displayDigit(displayUnit, 8, 4);   // Celsius/Fahrenheit indicator
+            break;
+        case 5:
+            displayDigit(-1, 9, 1);            // Display dot (. symbol)
+            break;
+    }
+
+    // Increment the current step for the next cycle
+    currentStep++;
 }
 
 void parameter_display(int index) {
@@ -441,6 +406,7 @@ switch (action) {
             break; // No parameter adjustment, just refresh the display
            
         default:
+					action=0;
             break;
     }
 
@@ -460,8 +426,34 @@ switch (action) {
 	  bool isNegative = (displayBuffer[0] == '-'); // Check if negative
 		 if (isNegative) {
 			 displayBuffer[0]='0';
+			   displayDigit(-1, 10, 2); 
         }
-		 
+		 if (strcmp(param->code, "r01") == 0)
+						{
+							displayDigit(-1, 9, 1); 
+						 
+						
+					   }
+bool isR01 = (strcmp(param->code, "r01") == 0);
+bool isR05 = (strcmp(param->code, "r05") == 0);
+//						 if (strcmp(param->code, "r05") == 0)
+
+//						
+//					{
+//						if(param->currentValue == 0)
+//						{
+//							
+//							displayDigit(0,8,4);
+//						}
+//						else
+//						{
+//								
+//							displayDigit(1,8,4);
+//						
+//						
+//					}
+//				}
+
     switch (currentStep) {
       
           case 0: // First step: Show the negative sign separately
@@ -485,7 +477,7 @@ switch (action) {
         case 3: // Third digit (right-most)
            
             displayDigit(displayBuffer[2] , 9, 5);        // Display the digit/character
-            currentStep++;
+            currentStep=0;
             break;
 				
 				case 4:
@@ -517,20 +509,22 @@ switch (action) {
 						
 					}
 					
-//				case 6:
-//					
-//if (!(strcmp(param->code, "r01") == 0 || param->type == 1))
-//                    {
-//                      displayDigit(0, 8, 4);
-//                      }
+				case 6:
+					
+if (!(strcmp(param->code, "r01") == 0 || param->type == 1))
+                    {
+                      displayDigit(0, 8, 4);
+                      }
 
-//				currentStep=0;
-//				  break;
+				currentStep=0;
+				  break;
 					
 
         default:
             currentStep = 0;
             break;
+				
+			
 			
     }
 
