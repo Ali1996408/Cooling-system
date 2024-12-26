@@ -43,7 +43,7 @@ volatile char buttonFlagCancel = 0; // cancel button flag
 volatile char buttonFlagConfirm = 0; // confirm button flag
 volatile uint32_t inactivity_timer = 0;
 
-typedef struct {
+
 //  ********   global_variables    ********** 
  int tempratura;  
 signed int r01_Differencial;
@@ -131,7 +131,8 @@ signed int t47_ustanovka_goda;
 // ******* Raznoe ****// 
 
 signed int o01_Zaderjka_vyhodnogo_signala_posle_zapuska;
-signed int o01_Setevoi_adres;
+signed int o02;
+signed int o03_Setevoi_adres;
 signed int o06_Servisnoe_soobschenie;
 signed int o04_Parol_1;
 signed int o05_Ispolzuemyi_tip_datchika;
@@ -139,6 +140,13 @@ signed int o15_Delenie_displeya;
 signed int o16_Maksimalnoe_vremya_ojidaniya_posle_koordinirovannoi_ottaiki;
 signed int o38_Konfiguraciya_funkcii_osvescheniya;
 signed int o39_Ruchnoe_vklyuchenie_rele_osvescheniya;
+signed int o46;
+signed int o64;
+signed int o65;
+signed int o66;
+signed int o67;
+signed int o70;
+signed int o72;
 
 
 // *******  Obsluzhivanie****//  
@@ -185,93 +193,9 @@ char fl_SysTick_Vetilator;
 //char fl_SysTick_ADC;   
 
 
-}  Settings;
 
-Settings currentSettings;
-const Settings factorySettings = {
-	2,
-	2,
-	50,
-	-50,
-	0,
-	0,
-	0,
-	1,
-	0,
-	0,
-	0,
-	30,
-	60,
-	90,
-	8,
-	-30,
-	30,
-	50,
-	0,
-	0,
-	0,
-	1,
-	2,
-	6,
-	8,
-	45,
-	0,
-	0,
-	0,
-	-5,
-	1,
-	0,
-	0,
-	20,
-	0,
-	0,
-	50,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	1,
-	1,
-	0,
-	5,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	20,
-	1,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	2
-	
-	
-	
-};
 
-void factoryReset(){
-	
-	
-	 currentSettings = factorySettings; 
-	
-	
-}
+
 
 
 
@@ -316,7 +240,7 @@ void debounce_buttons(void);
 //        lastUpdateTime = HAL_GetTick();
 //    }
 //}  
- int temprature=335; 
+ volatile int temprature; 
 void handle_menu_logic(void) {
     // Timestamps for button auto-repeat logic
     static uint32_t forward_hold_time = 0;
@@ -447,6 +371,7 @@ void handle_menu_logic(void) {
     // Confirm adjustment when confirm button is pressed
     if (buttonFlagConfirm) {
         parameter_adjust_and_display(selected_parameter, 2); // Confirm adjustment
+			menu_position=MAIN_SCREEN;
         buttonFlagConfirm = 0;
     }
 
@@ -522,7 +447,80 @@ int main(void)
 
   while (1)
   {
+			tempratura=savedParameterValues[0];
+		  r01_Differencial= savedParameterValues[1];
+		  r02_Maksimalnoe_ogranichenie_ustavki=savedParameterValues[2];
+		  r03_Minimalnoe_ogranichenie_ustavki=savedParameterValues[3];
+		  r04_Edinica_izmereniya_temperatury_C_F=savedParameterValues[4];
+		  r05_Korrekciya_pokazanii_temperatury=savedParameterValues[5];
+		  r09_Korrekciya_signala_s_Sair=savedParameterValues[6];
+		  r12_Ruchnoe_upravlenie_ostanovka_regulirovaniya_pusk_regulirovaniya=savedParameterValues[7];
+		  r13_Smeschenie_ustavki_vo_vremya_nochnogo_rejima_raboty=savedParameterValues[8];
+		  r39_Vklyuchenie_smescheniya_ustavki=savedParameterValues[9];
+		  r40_Velichina_smescheniya_ustavki=savedParameterValues[10];
+		  A03_Zaderjka_avariinogo_signala_temperaturi=savedParameterValues[11];
+		  A04_Zaderjka_avariinogo_signala_dveri=savedParameterValues[12];
+		  A12_Zaderjka_avariinogo_signala_temperatury_pri_nachale_ohlajdeniya=savedParameterValues[13];
+		  A13_Nijnii_predel_avariinogo_signala=savedParameterValues[14];
+		  A14_Verhnii_predel_avariinogo_signala=savedParameterValues[15];
+		  A27_Zaderjka_avariinogo_signala_DI=savedParameterValues[16];
+		  A37_Avariinyi_verhnii_predel_dlya_temperatury_kondensatora=savedParameterValues[17];
+		  c01_Min_vremya_raboty=savedParameterValues[18];
+		  c02_Min_vremya_stoyanki=savedParameterValues[19];
+		  c30_Rele_kompressora_doljno_vklyuchatsya_i_vyklyuchatsya_inversno=savedParameterValues[20];
+			c70_Vneshnie_rele=savedParameterValues[21];
+			d01_Temperatura_ostanovki_ottaiki=savedParameterValues[22];
+      d02_Sposob_ottaiki=savedParameterValues[23];
+      d03_Maksimalnaya_dlitelnost_ottaiki=savedParameterValues[24];
+      d05_Smeschenie_vklyucheniya_ottaiki_vo_vremya_zapuska=savedParameterValues[25];
+      d06_Zaderjka_zapuska_ventilyatora_posle_ottaiki=savedParameterValues[26];
+      d07_Vremya_kapleobrazovaniya=savedParameterValues[27];
+ 			d08_Temperatura_nachala_raboty_ventilyatora=savedParameterValues[28];
+			d09_Datchik_ottaiki=savedParameterValues[29];
+			d10_Rabota_ventilyatora_vo_vremya_ottaiki=savedParameterValues[30];
+			d18_Maksimalnoe_summarnoe_vremya_ohlajdeniya_mejdu_dvumya_ottaikami=savedParameterValues[31];
+			d19_Ottaika_po_neobhodimosti=savedParameterValues[32];
+			F01_Ostanovka_ventilyatora_pri_otklyuchenii_kompressora=savedParameterValues[33];
+			F02_Zaderjka_ventilyatora_pri_ostanovke_kompressora=savedParameterValues[34];
+			F04_Temperatura_ostanovki_ventilyatora=savedParameterValues[35];
+			t01_nastroika_chasov=savedParameterValues[36];
+			t02_nastroika_chasov=savedParameterValues[37];
+			t03_nastroika_chasov=savedParameterValues[38];
+			t04_nastroika_chasov=savedParameterValues[39];
+			t05_nastroika_chasov=savedParameterValues[40];
+			t06_nastroika_chasov=savedParameterValues[41];
+			t07_ustanovka_chasov=savedParameterValues[42];
+			t08_ustanovka_minut=savedParameterValues[43];
+			t11_nastroika_minut=savedParameterValues[44];
+			t12_nastroika_minut=savedParameterValues[45];
+			t13_nastroika_minut=savedParameterValues[46];
+			t14_nastroika_minut=savedParameterValues[47];
+			t15_nastroika_minut=savedParameterValues[48];
+			t16_nastroika_minut=savedParameterValues[49];
+			t45_ustanovka_dati=savedParameterValues[50];
+			t46_ustanovka_myasitsa=savedParameterValues[51];
+			t47_ustanovka_goda=savedParameterValues[52];
+			o01_Zaderjka_vyhodnogo_signala_posle_zapuska=savedParameterValues[53];
+			o02=savedParameterValues[54];
+			o03_Setevoi_adres=savedParameterValues[55];
+			o04_Parol_1=savedParameterValues[56];
+			o05_Ispolzuemyi_tip_datchika=savedParameterValues[57];
+			o06_Servisnoe_soobschenie=savedParameterValues[58];
+			o15_Delenie_displeya=savedParameterValues[59];
+			o16_Maksimalnoe_vremya_ojidaniya_posle_koordinirovannoi_ottaiki=savedParameterValues[60];
+			o38_Konfiguraciya_funkcii_osvescheniya=savedParameterValues[61];
+			o39_Ruchnoe_vklyuchenie_rele_osvescheniya=savedParameterValues[62];
+			o46=savedParameterValues[63];
+			o64=savedParameterValues[64];
+			o65=savedParameterValues[65];
+			o66=savedParameterValues[66];
+			o67=savedParameterValues[67];
+			o70=savedParameterValues[68];
+			o72=savedParameterValues[69];
 			
+			temprature=tempratura;
+		  
+		  
 
 	
     /* USER CODE END WHILE */

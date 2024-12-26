@@ -212,7 +212,7 @@ void TIM3_IRQHandler(void)
     LL_TIM_ClearFlag_UPDATE(TIM3);
 	 debounce_buttons();
 	check_inactivity();
-handle_menu_logic();
+   handle_menu_logic();
 	 // Toggle the LED using defined pin and port
 toggle();
 	

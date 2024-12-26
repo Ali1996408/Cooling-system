@@ -178,7 +178,7 @@ extern signed int t47_ustanovka_goda;
 // ******* Raznoe ****// 
 
 extern signed int o01_Zaderjka_vyhodnogo_signala_posle_zapuska;
-extern signed int o01_Setevoi_adres;
+extern signed int o03_Setevoi_adres;
 extern signed int o06_Servisnoe_soobschenie;
 extern signed int o04_Parol_1;
 extern signed int o05_Ispolzuemyi_tip_datchika;

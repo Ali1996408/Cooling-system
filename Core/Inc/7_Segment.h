@@ -15,6 +15,8 @@
 
     // Example parameters (expand this with your full parameter set)
  extern   Parameter parameters[];
+		
+extern volatile int savedParameterValues[80];
 // Function declarations related to parameters
 
 

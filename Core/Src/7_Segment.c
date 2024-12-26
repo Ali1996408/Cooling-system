@@ -7,6 +7,8 @@
 
 int  part0, part1, part2, counter = 0, tempType=0;
 
+volatile int savedParameterValues[80];
+
 		
  
 // Masks for 7-segment display
@@ -109,6 +111,15 @@ void temprature_display(int temp) {
     int IsNegative = 0;    // Symbol: -1 = dot (.), -2 = negative sign (-)
     int displayUnit = 0;     // Default unit (Celsius = 0, Fahrenheit = 1)
     static int currentStep = 0;
+		temp*=10;
+		
+	  float temp2= (float)temp/10;
+		
+		displayUnit=r05_Korrekciya_pokazanii_temperatury;
+		if(displayUnit)
+			{
+				temp2=(temp2*(1.8))+32;
+			}
 
     // Handle negative temperatures
     if (temp < 0) {
@@ -399,6 +410,10 @@ switch (action) {
 
         case 2: // Confirm and save
             // save_parameter_value(param); // Save value if implemented
+				// Confirm and save
+            savedParameterValues[paramIndex] = param->currentValue;
+            break;
+						
             return; // No further display update needed
            
         case 3: // Refresh display without changing the parameter
@@ -428,14 +443,40 @@ switch (action) {
 			 displayBuffer[0]='0';
 			   displayDigit(-1, 10, 2); 
         }
-		 if (strcmp(param->code, "r01") == 0)
+		
+bool isR01 = (strcmp(param->code, "r01") == 0);
+bool isR05 = (strcmp(param->code, "r05") == 0);
+				 if (strcmp(param->code, "r01") == 0)
 						{
 							displayDigit(-1, 9, 1); 
 						 
 						
 					   }
-bool isR01 = (strcmp(param->code, "r01") == 0);
-bool isR05 = (strcmp(param->code, "r05") == 0);
+	
+
+bool tempType=0;
+				
+
+if(param->currentValue == 0)
+{
+tempType=0;
+	
+
+
+}	
+
+else 
+{
+	tempType=1;
+}
+				if (isR05)
+
+            
+          {
+						 displayDigit(tempType,8,4);
+
+            
+          }			 
 //						 if (strcmp(param->code, "r05") == 0)
 
 //						
@@ -456,69 +497,65 @@ bool isR05 = (strcmp(param->code, "r05") == 0);
 
     switch (currentStep) {
       
-          case 0: // First step: Show the negative sign separately
-        if (isNegative) {
-            displayDigit(-1, 10, 2); // Display the negative sign (-) in a specific position
-        } 
-            currentStep++;
-            break;
+//          case 0: // First step: Show the negative sign separately
+//        if (isNegative) {
+//            displayDigit(-1, 10, 2); // Display the negative sign (-) in a specific position
+//        } 
+//            currentStep++;
+//            break;
             
-        case 1:
+        case 0:
           displayDigit(displayBuffer[0] , 11, 5);
            // Display the digit/character
             currentStep++;
             break;
 
-        case 2: // Second digit (middle)
+        case 1: // Second digit (middle)
+					
             displayDigit(displayBuffer[1] , 10, 5); // Display the digit/character
             currentStep++;
             break;
 
-        case 3: // Third digit (right-most)
-           
+        case 2: // Third digit (right-most)
+            
             displayDigit(displayBuffer[2] , 9, 5);        // Display the digit/character
-            currentStep=0;
+            currentStep++;
             break;
 				
-				case 4:
-					if (strcmp(param->code, "r01") == 0)
-						{
-							displayDigit(-1, 9, 1); 
-						 
-						
-					   }
-						currentStep++;
-						   break;
-				case 5:
-		if (strcmp(param->code, "r05") == 0)
+//				case 4:
+//					if (isR01)
+//						{
+//							displayDigit(-1, 9, 1); 
+//						 
+//						
+//					   }
+//						currentStep++;
+//						   break;
+//				case 3:
+//		  if (isR05)
 
-						
-					{
-						if(param->currentValue == 0)
-						{
-							
-							displayDigit(0,8,4);
-						}
-						else
-						{
-								
-							displayDigit(1,8,4);
-						}
-						currentStep=0;
-						   break;
-						
-					}
-					
-				case 6:
-					
-if (!(strcmp(param->code, "r01") == 0 || param->type == 1))
-                    {
-                      displayDigit(0, 8, 4);
-                      }
+//            
+//          {
+//						 displayDigit(tempType,8,4);
 
-				currentStep=0;
-				  break;
+//            
+//          }
+//					currentStep=0;
+//					break;
+          
+						
 					
+					
+				
+					
+//if (!(isR01) )
+//                    {
+//                      displayDigit(0, 8, 4);
+//                      }
+
+//				currentStep=0;
+//				  break;
+//					
 
         default:
             currentStep = 0;
@@ -527,5 +564,6 @@ if (!(strcmp(param->code, "r01") == 0 || param->type == 1))
 			
 			
     }
+		
 
 }
