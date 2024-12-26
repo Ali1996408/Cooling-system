@@ -111,26 +111,40 @@ void temprature_display(int temp) {
     int IsNegative = 0;    // Symbol: -1 = dot (.), -2 = negative sign (-)
     int displayUnit = 0;     // Default unit (Celsius = 0, Fahrenheit = 1)
     static int currentStep = 0;
-		temp*=10;
+		float fahrenheit;
+		int int_part;
+		int frac_part;
 		
-	  float temp2= (float)temp/10;
+		temp*=10;
 		
 		displayUnit=r05_Korrekciya_pokazanii_temperatury;
 		if(displayUnit)
 			{
-				temp2=(temp2*(1.8))+32;
+				 fahrenheit = (temp * 9.0 / 5.0)/10.0 + 32.0;
+			
+			
+	  int_part = (int)fahrenheit;                 // Integer part of the result
+    frac_part = (int)((fahrenheit  * 10))%10;  // First digit after 
+				
+				segments[0]=frac_part;
+				segments[1]=int_part % 10;
+				segments[2]=(int_part / 10) % 10;
+				
 			}
-
+			else
+			{
+				 // Extract digits
+    segments[0] = abs(temp) % 10;                // Ones place
+    segments[1] = (abs(temp) / 10) % 10;         // Tens place
+    segments[2] = (abs(temp) / 100) % 10;        // Hundreds place
+			}
     // Handle negative temperatures
     if (temp < 0) {
         IsNegative = 1;  // Set negative sign
                // Convert to positive for further processing
     }
 
-    // Extract digits
-    segments[0] = abs(temp) % 10;                // Ones place
-    segments[1] = (abs(temp) / 10) % 10;         // Tens place
-    segments[2] = (abs(temp) / 100) % 10;        // Hundreds place
+   
 
    
 
