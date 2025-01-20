@@ -21,8 +21,9 @@ extern volatile int savedParameterValues[80];
 
 
 // Function prototype for Timer3 initialization
+void SevenSegment(int temp);
 int mask(int num);
-void temprature_display(int temp);
+//void temprature_display(int temp);
 void parameter_display (int index);
 void parameter_adjust_and_display(int paramIndex, int action);
 #endif /* TIMER3_H */
