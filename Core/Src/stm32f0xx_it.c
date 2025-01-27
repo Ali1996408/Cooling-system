@@ -19,14 +19,14 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32f0xx_it.h"
 #include "stm32f0xx_ll_tim.h"
 #include "stm32f0xx_ll_gpio.h"
 #include "stm32f0xx_ll_bus.h"
-#include "7_Segment.h"
+#include "7_Segment.h" 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
+
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
@@ -145,18 +145,77 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles EXTI line 0 and 1 interrupts.
+  */
+void EXTI0_1_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI0_1_IRQn 0 */
+ if (__HAL_GPIO_EXTI_GET_IT(BUTTON4_Pin) != RESET)
+    {
+  /* USER CODE END EXTI0_1_IRQn 0 */
+__HAL_GPIO_EXTI_CLEAR_IT(BUTTON4_Pin);  /* USER CODE BEGIN EXTI0_1_IRQn 1 */
+			 if (button_debounce_timer[0] == 0) {
+            button_debounce_timer[0] = DEBOUNCE_THRESHOLD_MS;
+            buttonFlagConfirm = 1;
+					inactivity_timer=INACTIVITY_TIME;
+ HAL_GPIO_TogglePin(LED4_GPIO_Port, LED4_Pin);
+  /* USER CODE END EXTI0_1_IRQn 1 */
+			 }
+		}
+}
+
+/**
+  * @brief This function handles EXTI line 2 and 3 interrupts.
+  */
+void EXTI2_3_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI2_3_IRQn 0 */
+if (__HAL_GPIO_EXTI_GET_IT(BUTTON2_Pin) != RESET)
+    {
+  /* USER CODE END EXTI2_3_IRQn 0 */
+__HAL_GPIO_EXTI_CLEAR_IT(BUTTON2_Pin);
+			if (button_debounce_timer[1] == 0) {
+            button_debounce_timer[1] = DEBOUNCE_THRESHOLD_MS;
+            buttonFlagCancel = 1;
+					inactivity_timer=INACTIVITY_TIME;
+  /* USER CODE BEGIN EXTI2_3_IRQn 1 */
+			HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+			 }
+		}
+  /* USER CODE END EXTI2_3_IRQn 1 */
+}
+
+/**
   * @brief This function handles EXTI line 4 to 15 interrupts.
   */
 void EXTI4_15_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI4_15_IRQn 0 */
+if (__HAL_GPIO_EXTI_GET_IT(BUTTON1_Pin) != RESET)
+    {
+			__HAL_GPIO_EXTI_CLEAR_IT(BUTTON1_Pin);
 
+			 if (button_debounce_timer[2] == 0) {
+            button_debounce_timer[2] = DEBOUNCE_THRESHOLD_MS;
+            buttonFlagBackward = 1;
+					inactivity_timer=INACTIVITY_TIME;
   /* USER CODE END EXTI4_15_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(S1_Pin);
-  HAL_GPIO_EXTI_IRQHandler(S3_Pin);
-  /* USER CODE BEGIN EXTI4_15_IRQn 1 */
+	HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 
+			 }
+		}
+		if (__HAL_GPIO_EXTI_GET_IT(BUTTON3_Pin) != RESET)
+    {
+			__HAL_GPIO_EXTI_CLEAR_IT(BUTTON3_Pin);
+  /* USER CODE BEGIN EXTI4_15_IRQn 1 */
+			 if (button_debounce_timer[3] == 0) {
+            button_debounce_timer[3] = DEBOUNCE_THRESHOLD_MS;
+            buttonFlagForward = 1;
+					inactivity_timer=INACTIVITY_TIME;
+	HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+			 }
   /* USER CODE END EXTI4_15_IRQn 1 */
+		}
 }
 
 /**
@@ -166,15 +225,18 @@ void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
   /* USER CODE END TIM3_IRQn 0 */
- 
+  HAL_TIM_IRQHandler(&htim3);
   /* USER CODE BEGIN TIM3_IRQn 1 */
 
 if (LL_TIM_IsActiveFlag_UPDATE(TIM3))
        {
            LL_TIM_ClearFlag_UPDATE(TIM3);
-           SevenSegment(125);
+	debounce_buttons();
+	check_inactivity();
+  handle_menu_logic();
+	toggle();
            // Toggle the LED
-           toggle();
+           
        }
   /* USER CODE END TIM3_IRQn 1 */
 }
