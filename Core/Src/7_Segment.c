@@ -492,17 +492,17 @@ switch (action) {
 	  bool isNegative = (displayBuffer[0] == '-'); // Check if negative
 		 if (isNegative) {
 			 displayBuffer[0]='0';
-			   displayDigit(-1, 10, 2); 
+//			   displayDigit(-1, 10, 2); 
         }
 		
 bool isR01 = (strcmp(param->code, "r01") == 0);
 bool isR05 = (strcmp(param->code, "r05") == 0);
-				 if (strcmp(param->code, "r01") == 0)
-						{
-							displayDigit(-1, 9, 1); 
-						 
-						
-					   }
+//				 if (strcmp(param->code, "r01") == 0)
+//						{
+//							displayDigit(-1, 9, 1); 
+//						 
+//						
+//					   }
 	
 
 bool tempType=0;
@@ -520,14 +520,14 @@ else
 {
 	tempType=1;
 }
-				if (isR05)
+//				if (isR05)
 
-            
-          {
-						 displayDigit(tempType,8,4);
+//            
+//          {
+//						 displayDigit(tempType,8,4);
 
-            
-          }			 
+//            
+//          }			 
 //						 if (strcmp(param->code, "r05") == 0)
 
 //						
@@ -545,54 +545,57 @@ else
 //						
 //					}
 //				}
-
+			  disableAllDigits();
+		
     switch (currentStep) {
       
-//          case 0: // First step: Show the negative sign separately
-//        if (isNegative) {
-//            displayDigit(-1, 10, 2); // Display the negative sign (-) in a specific position
-//        } 
-//            currentStep++;
-//            break;
-            
-        case 0:
+          case 0: // First step: Show the negative sign separately
+        if (isNegative) {
+					displayBuffer[0]='0';
+            displayDigit(-1, 10, 2); // Display the negative sign (-) in a specific position
+					
+        } 
+            currentStep++;
+            break;
+
+        case 1:
           displayDigit(displayBuffer[0] , 11, 5);
            // Display the digit/character
             currentStep++;
             break;
 
-        case 1: // Second digit (middle)
+        case 2: // Second digit (middle)
 					
             displayDigit(displayBuffer[1] , 10, 5); // Display the digit/character
             currentStep++;
             break;
 
-        case 2: // Third digit (right-most)
+        case 3: // Third digit (right-most)
             
             displayDigit(displayBuffer[2] , 9, 5);        // Display the digit/character
             currentStep++;
             break;
 				
-//				case 4:
-//					if (isR01)
-//						{
-//							displayDigit(-1, 9, 1); 
-//						 
-//						
-//					   }
-//						currentStep++;
-//						   break;
-//				case 3:
-//		  if (isR05)
+				case 4:
+					if (isR01)
+						{
+							displayDigit(-1, 9, 1); 
+						 
+						
+					   }
+						currentStep++;
+						   break;
+				case 5:
+		  if (isR05)
 
-//            
-//          {
-//						 displayDigit(tempType,8,4);
+            
+          {
+						 displayDigit(tempType,8,4);
 
-//            
-//          }
-//					currentStep=0;
-//					break;
+            
+          }
+					currentStep=0;
+					break;
           
 						
 					
@@ -612,7 +615,7 @@ else
             currentStep = 0;
             break;
 				
-			
+			 
 			
     }
 		
